@@ -1,6 +1,6 @@
 <div align="center">
 
-# Figma Design Master
+# Design from References
 
 ### Learn aesthetics from the best-rated sites on the web — then generate original, accessible, production-grade Figma design systems.
 
@@ -24,7 +24,7 @@
 
 ## What is this?
 
-**Figma Design Master** is a system of **[Claude Code](https://claude.com/claude-code) skills + agents** that does two things:
+**Design from References** is a system of **[Claude Code](https://claude.com/claude-code) skills + agents** that does two things:
 
 1. **Researches the best.** The `dataset-builder` agent goes online, navigates award-winning / highly-rated sites with Playwright, and **measures their real design DNA** — fonts and colours via `getComputedStyle`, full-page screenshots (desktop **and** mobile), and a written `design.md` analysis per site. The result is a reusable, *evidence-based* aesthetic dataset.
 
