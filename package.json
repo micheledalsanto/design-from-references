@@ -1,0 +1,9 @@
+{
+  "name": "figma-design-master",
+  "version": "0.3.0",
+  "private": true,
+  "description": "Skill + agenti Claude Code per generare design Figma originali e accessibili, imparando l'estetica da siti reali premiati. Dataset costruito via agente dataset-builder (ricerca online).",
+  "engines": {
+    "node": ">=20"
+  }
+}

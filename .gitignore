@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+package-lock.json
+.pnpm-store/
+
+# Generated datasets (created on demand by the dataset-builder agent).
+/data/datasets/*
+!/data/datasets/README.md
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.idea/
+.vscode/
+
+# Logs / temp
+*.log
+tmp/
+.tmp/
+*.tmp
+.playwright-mcp/
+
+# Local Claude settings (keep shared settings, ignore machine-local)
+.claude/settings.local.json
+
+# Secrets
+.env
+.env.local
+*.key
