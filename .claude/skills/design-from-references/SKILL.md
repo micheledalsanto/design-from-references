@@ -48,8 +48,7 @@ scelte coraggiose ma accessibili.
   anti-slop, motion, verifica). Questa skill la **delega**, non la ripete.
 - **Dataset** in `data/datasets/<category>/dataset.json` — costruito dall'agente
   **`dataset-builder`** con **ricerca online reale** (font/colori MISURATI + screenshot
-  full-page desktop+mobile + `design.md` per sito). Se il dataset della categoria
-  **manca, e' magro o monotono** → invoca `dataset-builder` PRIMA di progettare.
+  full-page desktop+mobile + `design.md` per sito).
 
 ## Input Contract
 Prima di progettare, raccogli o **deduci esplicitamente**: brand/nome prodotto,
@@ -148,7 +147,5 @@ gate Accessibilita' (3.6), UX (3.7), Internal Critic (3.9), Verifica render (5) 
 verdi, e un Final Score ≥ 4 su Originalita' e Chiarezza UX.
 
 ## Test Run Checklist (meta — per migliorare la skill, non il design)
-Dopo il primo uso reale, raccogli feedback su: quali gate hanno rallentato troppo ·
-quali output erano ridondanti · dove hai chiesto troppe informazioni · dove il dataset
-era insufficiente · dove il design e' sembrato ancora generico · quali parti del
-processo vanno abbreviate. Usa queste note per affinare la skill, non l'output corrente.
+Dopo ogni uso reale annota: gate troppo lenti · output ridondanti · dataset
+insufficiente · punti ancora generici. Servono ad affinare la skill, non l'output corrente.

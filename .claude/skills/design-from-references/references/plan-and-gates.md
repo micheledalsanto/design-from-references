@@ -8,9 +8,8 @@ Niente riga sourceless.
   (`sites[].fonts` del cluster, display/body/mono). Usa QUELLI; se uno non e'
   disponibile in Figma (`listAvailableFontsAsync`) scegli l'equivalente piu' vicino e
   **dichiara la sostituzione**. **VIETATO** scegliere font "di default" (Cormorant,
-  Playfair, Inter, Spectral, Roboto Mono, Geist…) senza aver prima letto i font del
-  dataset: se il tuo font non e' tra quelli misurati o un loro equivalente dichiarato,
-  stai defaultando — torna ai dati (o amplia il dataset con `dataset-builder`).
+  Playfair, Inter, Spectral, Roboto Mono, Geist…): un font che non e' tra quelli
+  misurati o un loro equivalente dichiarato = stai defaultando — torna ai dati.
 - **Colori (DAI DATI):** la palette CORE viene dai colori MISURATI nel dataset
   (`sites[].bg/colors/accent`). Ogni scostamento va **dichiarato come invenzione** con
   motivo — mai un default silenzioso. Se la palette del dataset e' monotona, ampliala
@@ -36,7 +35,8 @@ Niente riga sourceless.
   *SaaS*: Landing, Features, Pricing, Login, Dashboard. *Agency/Portfolio*: Home,
   Work, Case study, About, Contact. *E-commerce*: Home, PLP, PDP, Cart, Checkout.
   *Restaurant*: Home, Menu, Booking, Story, Location. *Education*: Home, Course,
-  Lesson, Quiz, Progress.
+  Lesson, Quiz, Progress. *Mobile app*: Onboarding, Home/Dashboard, flusso core
+  (2–3 step), Dettaglio, Profilo/Impostazioni.
 
 ## 3.4 Component Strategy
 Identifica: componenti base, compositi, specifici-del-concept, varianti, **stati**,
@@ -54,7 +54,16 @@ inquadratura, trattamento colore, realismo, **relazione con la tesi**, cosa evit
   **`upload_assets`** (`figma.createImageAsync` NON e' supportato in use_figma) e
   applica un **trattamento coerente** (grayscale/duotone/crop/overlay) — mai grezze.
   (Per il B&W in Figma: sul paint immagine imposta `filters.saturation = -1`.)
-  Riporta l'**attribuzione** (autore/piattaforma) in `📖 Documentation`.
+  Riporta l'**attribuzione** (autore/piattaforma) nella sezione docs di
+  `📖 Foundations & Docs`.
+- **Solo immagini GRATUITE:** se l'URL diretto risolve a `plus.unsplash.com`
+  (Unsplash+ **premium**), NON usarla → scegli un'alternativa free
+  (`images.unsplash.com` / `images.pexels.com`).
+- **Verifica immagini A VISTA (bloccante):** dopo aver applicato le foto, uno
+  **screenshot** deve mostrare OGNI immagine renderizzata. Un fill `IMAGE` con hash
+  rotto (upload fallito, file >~5 MB, fonte premium) passa il check "il fill e'
+  IMAGE?" ma appare **vuoto** → serve l'occhio sullo screenshot. Riapplica gli
+  slot vuoti.
 - Licensing: salva la fonte, `alt` descrittivo, evita volti reali se non necessari,
   ogni immagine ha una funzione narrativa/compositiva.
 

@@ -4,35 +4,49 @@
  * Uso:
  *   node contrast.js "#ffffff" "#0b0b0b"            -> una coppia
  *   node contrast.js "#fff:#000" "#6b78ff:#0b0b0b"  -> piu' coppie fg:bg
+ * Hex a 3 o 6 cifre, "#" opzionale.
  * Verdetto: testo normale >=4.5, testo large/UI >=3, altrimenti FAIL.
- * Exit code 1 se almeno una coppia e' FAIL (utile come gate in script).
+ * Exit code: 1 se almeno una coppia e' FAIL, 2 se l'input non e' valido.
  */
-function lin(c) { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
-function L(hex) {
-  const h = hex.replace("#", "");
-  return 0.2126 * lin(parseInt(h.slice(0, 2), 16)) +
-         0.7152 * lin(parseInt(h.slice(2, 4), 16)) +
-         0.0722 * lin(parseInt(h.slice(4, 6), 16));
-}
-function ratio(fg, bg) { const hi = Math.max(L(fg), L(bg)), lo = Math.min(L(fg), L(bg)); return (hi + 0.05) / (lo + 0.05); }
+"use strict";
 
+function parseHex(hex) {
+  const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(hex).trim());
+  if (!m) return null;
+  let h = m[1];
+  if (h.length === 3) h = h.replace(/./g, (c) => c + c);
+  return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
+}
+function lin(c) { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
+function L(rgb) { return 0.2126 * lin(rgb[0]) + 0.7152 * lin(rgb[1]) + 0.0722 * lin(rgb[2]); }
+function ratio(fg, bg) {
+  const a = L(fg), b = L(bg);
+  return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+}
 function verdict(r) { return r >= 4.5 ? "PASS (testo)" : r >= 3 ? "solo large/UI" : "FAIL"; }
 
-import { pathToFileURL } from "node:url";
-export { ratio, verdict, L };
+module.exports = { parseHex, ratio, verdict, L };
 
-// CLI (robusto cross-platform)
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (require.main === module) {
   const args = process.argv.slice(2);
-  const pairs = [];
-  if (args.length === 2 && !args[0].includes(":")) pairs.push([args[0], args[1]]);
-  else for (const a of args) { const [fg, bg] = a.split(":"); pairs.push([fg, bg]); }
+  if (args.length === 0) {
+    console.error('Uso: node contrast.js "#fg:#bg" ["#fg:#bg" ...]  |  node contrast.js "#fg" "#bg"');
+    process.exit(2);
+  }
+  const pairs = args.length === 2 && !args[0].includes(":")
+    ? [args]
+    : args.map((a) => a.split(":"));
   let fail = false;
-  for (const [fg, bg] of pairs) {
+  for (const [fgHex, bgHex] of pairs) {
+    const fg = parseHex(fgHex), bg = parseHex(bgHex);
+    if (!fg || !bg) {
+      console.error(`Input non valido: "${fgHex}:${bgHex}" — atteso hex 3 o 6 cifre (es. "#6b78ff:#0b0b0b")`);
+      process.exit(2);
+    }
     const r = ratio(fg, bg);
     const v = verdict(r);
     if (v === "FAIL") fail = true;
-    console.log(`${fg} su ${bg} = ${r.toFixed(2)}:1  ${v}`);
+    console.log(`${fgHex} su ${bgHex} = ${r.toFixed(2)}:1  ${v}`);
   }
   process.exit(fail ? 1 : 0);
 }

@@ -6,16 +6,16 @@ estetica.
 
 **ORDINE DI COSTRUZIONE (obbligatorio — NON partire dalle schermate):**
 1. **Foundations** — token (colore/spacing/radius) + text style **E lo specimen
-   VISIVO** sulla pagina `🎨 Foundations`: swatch colore (chip + nome + hex), type
-   scale (campione per ogni text style), spacing/radius. I token sono invisibili: la
-   pagina **NON va lasciata vuota**, deve documentarli a vista.
+   VISIVO** sulla pagina `📖 Foundations & Docs`: swatch colore (chip + nome + hex),
+   type scale (campione per ogni text style), spacing/radius. I token sono invisibili:
+   la pagina **NON va lasciata vuota**, deve documentarli a vista.
 2. **Components** — costruisci la **libreria** sulla pagina `🧩 Components`:
    Button, Nav, Field/Input, Dropdown, Table Row, Card, Footer… come **component
    set con varianti+stati** (default/hover/focus/disabled, header/data, ecc.).
    Disponili in modo **ORDINATO**: una **griglia/colonne per categoria** (atoms /
    cards / chrome), **non** una singola colonna verticale lunga. SENZA sovrapposizioni
    (gap adeguati; le coordinate di componenti creati in call diverse possono collidere
-   → riposizionali raggruppandoli). **Niente etichette di testo manuali.**
+   → riposizionali raggruppandoli).
    **Controlli obbligatori sulla pagina Components:**
    - Ogni componente deve **HUG il contenuto** (`primaryAxisSizingMode='AUTO'`, e per
      gli orizzontali `counterAxisSizingMode='AUTO'`): **niente `resize()` con altezza
@@ -25,6 +25,10 @@ estetica.
      il nome del componente/variant. Non aggiungere TEXT decorativi sulla pagina.
    - Dopo il layout: verifica **overlap=0** (bounding box) **e** che ogni componente
      contenga i suoi figli (nessun child che sfora il frame).
+   - **Ri-verifica DOPO ogni fix di sizing:** cambiare la dimensione di un componente
+     gia' disposto (tipico: da size fissa a hug) sposta le colonne e puo' ricreare
+     overlap/clipping → ri-disponi e ri-esegui il check. La verifica della pagina
+     Components va rifatta come **ULTIMO passo**, dopo tutti i fix.
 3. **Screens** — COMPONI le schermate da **ISTANZE** dei componenti
    (`component.createInstance()`), NON ridisegnando a mano ciò che è gia' un
    componente. Solo lo scaffold specifico della schermata (hero, header, signature)
@@ -72,8 +76,8 @@ prima che il verifier sia PASS**: aspetta il suo esito e risolvi gli issue (le
 scritture restano sequenziali). Un testo tagliato in un rail stretto o una caption che
 sfora NON si vedono in uno screenshot a bassa risoluzione — fidati del verifier, non
 dell'occhio sul thumbnail. **Verifica con uno screenshot OGNI pagina costruita, non
-solo le schermate** — anche `📕 Cover`, `🎨 Foundations` (specimen) e `🧩 Components`
-soffrono lo stesso crop da size fisse. Cerca gli **errori noti**:
+solo le schermate** — anche `📕 Cover`, `📖 Foundations & Docs` (specimen) e
+`🧩 Components` soffrono lo stesso crop da size fisse. Cerca gli **errori noti**:
 1. **Altezza/larghezza frame / clipping:** ogni contenitore auto-layout deve **HUG**
    il contenuto (`primaryAxisSizingMode='AUTO'`, e l'asse opposto `counterAxisSizingMode=
    'AUTO'` per le altezze). **Gotcha ricorrente:** `resize(w,h)` su un frame auto-layout

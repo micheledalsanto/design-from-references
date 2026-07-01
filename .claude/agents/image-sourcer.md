@@ -24,7 +24,9 @@ Una lista di slot con art-direction, es.:
    (`images.unsplash.com/photo-...` o `images.pexels.com/photos/...`). Prendi quello.
    Per Unsplash puoi aggiungere parametri di dimensione (`?w=1200&q=80`).
 3. **Scarica** con `curl -s -L -o <localPath> "<directUrl>"` (segue i redirect).
-   Verifica: content-type `image/*` e size > 10KB; altrimenti prova un altro risultato.
+   Verifica: content-type `image/*` e size tra 10KB e ~5MB — i file enormi fanno
+   fallire l'upload su Figma (per ridurli: `?w=1600&q=80` su Unsplash, varianti
+   ridimensionate su Pexels); altrimenti prova un altro risultato.
 4. Annota **fonte** (URL pagina), **autore** e **piattaforma** per l'attribuzione.
 
 Se per uno slot non trovi nulla di pertinente dopo 2–3 tentativi, dichiaralo (non
@@ -34,10 +36,14 @@ trattato.
 ## Output (struttura fissa)
 Per ogni slot: `role`, `localPath`, `sourceUrl`, `author`, `platform`, `alt`,
 `treatment` suggerito. Piu' una riga di **attribuzione** (autore · piattaforma · link)
-da mettere in `📖 Documentation`. NON tocchi Figma: il costruttore carica i file con
+da mettere nella sezione docs di `📖 Foundations & Docs`. NON tocchi Figma: il costruttore carica i file con
 `upload_assets` e applica il trattamento (duotone/overlay/crop/grayscale) per coerenza.
 
 ## Regole
 - Solo ricerca + fetch (no API key). Solo immagini pertinenti alla query e all'art
   direction. Salva sempre fonte + autore (attribuzione). Evita volti riconoscibili se
   non necessari al contenuto.
+- **Solo GRATUITE:** scarta i risultati Unsplash+ / premium (l'URL diretto risolve a
+  `plus.unsplash.com/premium_photo-...`) — non sono royalty-free e spesso non si
+  renderizzano. Usa solo `images.unsplash.com/photo-...` o `images.pexels.com/...`.
+  Se il primo risultato e' premium, prendi l'alternativa free.

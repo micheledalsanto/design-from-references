@@ -38,9 +38,8 @@ Cosa devono restituire gli agenti paralleli (definiti in `.claude/agents/`):
   `design.md` per sito, scrive `data/datasets/<cat>/dataset.json`.
 
 ## Robustezza (unhappy path & iterazioni)
-- **Dataset assente/magro:** se manca o ha pochi siti → invoca `dataset-builder`
-  (ricerca online) prima di procedere; non allucinare font/colori. Se anche dopo resta
-  magro, avvisa e dichiara piu' invenzione.
+- **Dataset ancora magro dopo `dataset-builder`:** avvisa l'utente e dichiara
+  esplicitamente piu' invenzione (non allucinare font/colori "misurati").
 - **MCP Figma cade a meta':** i `use_figma` sono atomici; riprendi dallo stato reale
   (`get_metadata`) e dal Decision Register, non da memoria.
 - **Revision Strategy (post-consegna):** classifica la modifica e interveni al livello
@@ -55,8 +54,7 @@ Cosa devono restituire gli agenti paralleli (definiti in `.claude/agents/`):
 **Strategic Brief:** `Brand · Category/Cluster · Deliverable · Language · Audience ·
 Goal · Primary action · Success metric · Archetype · 5s-takeaway · Avoid`
 
-**Creative Thesis:** *"This interface is built around the idea of [concept], expressed
-through [visual system], to make users feel/understand [effect]."*
+**Creative Thesis:** formato obbligatorio in `originality-engine.md` (punto 1).
 
 **Territory (×3):** `Name · Metaphor · From references · What it breaks · Image
 treatment · Type mood · Risk · Why memorable` → poi la scelta motivata.
