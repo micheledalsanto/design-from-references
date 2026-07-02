@@ -1,34 +1,36 @@
-# Originality Engine (gate 2.5 — bloccante, il cuore)
+# Originality Engine (gate 2.5 — blocking, the heart)
 
-Prima del piano visivo completa TUTTI questi punti. Mostra Thesis + Territori +
-scelta all'utente prima di costruire.
+Before the full visual plan, complete ALL of these points. Show Thesis +
+Territories + your choice to the user before building.
 
-1. **Creative Thesis** (1 frase, formato obbligatorio):
+1. **Creative Thesis** (1 sentence, mandatory format):
    *"This interface is built around the idea of [concept], expressed through
    [visual system], to make users feel/understand [effect]."*
-   Deve poter appartenere solo a QUESTO brand.
-2. **Three Creative Territories** — 3 direzioni distinte; per ognuna: concept +
-   metafora visiva, cosa prende dalle reference, **cosa rompe**, trattamento
-   immagini, type mood, rischio, perche' memorabile. **Scegline una** e motiva.
-3. **Anti-Copy Distance** — la direzione scelta deve differire dalle reference in
-   ≥3 dimensioni tra: composizione hero, ritmo sezioni, metafora visiva, logica di
-   navigazione, trattamento immagini, signature interaction, gerarchia tipografica.
-   Se ricorda troppo una singola reference → torna ai Territori.
-4. **Signature Element** (obbligatorio) — un elemento proprietario riconoscibile
-   anche senza logo, derivato dalla tesi, applicabile su piu' schermate (visual
+   It must be able to belong only to THIS brand.
+2. **Three Creative Territories** — 3 distinct directions; for each: concept +
+   visual metaphor, what it takes from the references, **what it breaks**,
+   image treatment, type mood, risk, why it's memorable. **Pick one** and
+   justify the choice.
+3. **Anti-Copy Distance** — the chosen direction must differ from the references
+   in ≥3 dimensions among: hero composition, section rhythm, visual metaphor,
+   navigation logic, image treatment, signature interaction, typographic
+   hierarchy. If it recalls a single reference too closely → back to the
+   Territories.
+4. **Signature Element** (mandatory) — a proprietary element recognizable even
+   without the logo, derived from the thesis, applicable across screens (visual
    grammar / motion pattern / layout mechanic / custom component / interaction
-   ritual). NON valido: gradiente generico, card arrotondate, font grande, hero
-   stock.
-5. **Make It Less Expected** — elenca 5 scelte che un AI farebbe di default per
-   questa categoria (es. gradient hero, headline centrata enorme, dashboard
-   flottante, CTA blu, sezioni alternate immagine/testo) e **sostituiscine ≥3** con
-   alternative piu' distintive *ma usabili*. Piu' **una sola Controlled Rule-Break**
-   intenzionale che migliori memorabilita'/comprensione (non decorativa). Se la
-   rottura risulta **strana o confusa** (fallisce l'One-Screen test o la Gate
-   Priority UX>Originalita'), **scartala**: distintivo ≠ bizzarro. (Es. una nav a
-   indice verticale puo' sembrare "strana" se non e' chiarissima — verificala o usa
-   una nav convenzionale piu' un altro signature.)
-6. **Trend Filter** — non usare un trend visivo solo perche' popolare. Ogni trend
-   dev'essere coerente con la tesi, utile alla UX, differenziato nell'esecuzione,
-   sostenibile nel tempo. Se una scelta sembra "Awwwards generic 2026" (genericita'
-   da festival, non da SaaS template), trasformala.
+   ritual). NOT valid: a generic gradient, rounded cards, a big font, a stock
+   hero.
+5. **Make It Less Expected** — list 5 choices an AI would default to for this
+   category (e.g. gradient hero, huge centered headline, floating dashboard,
+   blue CTA, alternating image/text sections) and **replace ≥3** with more
+   distinctive *but usable* alternatives. Plus a single intentional
+   **Controlled Rule-Break** that improves memorability/comprehension (not
+   decorative). If the break turns out **odd or confusing** (it fails the
+   One-Screen test or the UX>Originality Gate Priority), **discard it**:
+   distinctive ≠ bizarre. (E.g. a vertical-index nav can feel "odd" if it isn't
+   crystal clear — verify it, or use a conventional nav plus another signature.)
+6. **Trend Filter** — don't use a visual trend just because it's popular. Every
+   trend must be coherent with the thesis, useful to the UX, differentiated in
+   execution, sustainable over time. If a choice feels "Awwwards generic 2026"
+   (festival genericity, not SaaS-template genericity), transform it.

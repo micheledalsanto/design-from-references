@@ -1,119 +1,124 @@
-# BUILD → Verifica render → Score → Output (4 → 7.1)
+# BUILD → Render verification → Score → Output (4 → 7.1)
 
-## 4. BUILD — TU crei il prodotto
-Default Figma via MCP (`figma-use` + `figma-generate-*`). Le reference sono solo
-estetica.
+## 4. BUILD — YOU create the product
+Default is Figma via MCP (`figma-use` + `figma-generate-*`). The references are
+aesthetics only.
 
-**ORDINE DI COSTRUZIONE (obbligatorio — NON partire dalle schermate):**
-1. **Foundations** — token (colore/spacing/radius) + text style **E lo specimen
-   VISIVO** sulla pagina `📖 Foundations & Docs`: swatch colore (chip + nome + hex),
-   type scale (campione per ogni text style), spacing/radius. I token sono invisibili:
-   la pagina **NON va lasciata vuota**, deve documentarli a vista.
-2. **Components** — costruisci la **libreria** sulla pagina `🧩 Components`:
-   Button, Nav, Field/Input, Dropdown, Table Row, Card, Footer… come **component
-   set con varianti+stati** (default/hover/focus/disabled, header/data, ecc.).
-   Disponili in modo **ORDINATO**: una **griglia/colonne per categoria** (atoms /
-   cards / chrome), **non** una singola colonna verticale lunga. SENZA sovrapposizioni
-   (gap adeguati; le coordinate di componenti creati in call diverse possono collidere
-   → riposizionali raggruppandoli).
-   **Controlli obbligatori sulla pagina Components:**
-   - Ogni componente deve **HUG il contenuto** (`primaryAxisSizingMode='AUTO'`, e per
-     gli orizzontali `counterAxisSizingMode='AUTO'`): **niente `resize()` con altezza
-     fissa** che taglia testo/figli (= "frame troppo stretti/tagliati"). `clipsContent`
-     off sui contenitori-componente.
-   - **Nessuna etichetta di testo "manuale"** accanto ai componenti: Figma mostra gia'
-     il nome del componente/variant. Non aggiungere TEXT decorativi sulla pagina.
-   - Dopo il layout: verifica **overlap=0** (bounding box) **e** che ogni componente
-     contenga i suoi figli (nessun child che sfora il frame).
-   - **Ri-verifica DOPO ogni fix di sizing:** cambiare la dimensione di un componente
-     gia' disposto (tipico: da size fissa a hug) sposta le colonne e puo' ricreare
-     overlap/clipping → ri-disponi e ri-esegui il check. La verifica della pagina
-     Components va rifatta come **ULTIMO passo**, dopo tutti i fix.
-3. **Screens** — COMPONI le schermate da **ISTANZE** dei componenti
-   (`component.createInstance()`), NON ridisegnando a mano ciò che è gia' un
-   componente. Solo lo scaffold specifico della schermata (hero, header, signature)
-   è costruito ad hoc; il resto sono istanze con override di testo/varianti.
-4. **Cover** — disegna la pagina `📕 Cover` come **thumbnail in stile Community**
-   (≈1920×960): brand/wordmark + tagline + un preview visivo + meta (cluster, n.
-   schermate, desktop+mobile, accessibilità). È ciò che si vede in elenco file/Community.
-Costruire le schermate prima dei componenti = ordine SBAGLIATO: rifai partendo dai componenti.
+**BUILD ORDER (mandatory — do NOT start from the screens):**
+1. **Foundations** — tokens (colour/spacing/radius) + text styles **AND the
+   VISUAL specimen** on the `📖 Foundations & Docs` page: colour swatches (chip +
+   name + hex), type scale (a sample per text style), spacing/radius. Tokens are
+   invisible: the page must **NOT be left empty** — it documents them visually.
+2. **Components** — build the **library** on the `🧩 Components` page: Button,
+   Nav, Field/Input, Dropdown, Table Row, Card, Footer… as **component sets
+   with variants+states** (default/hover/focus/disabled, header/data, etc.).
+   Lay them out **NEATLY**: a **grid/columns per category** (atoms / cards /
+   chrome), **not** one long vertical column. NO overlaps (adequate gaps;
+   components created in different calls can collide → reposition them by group).
+   **Mandatory checks on the Components page:**
+   - Every component must **HUG its content** (`primaryAxisSizingMode='AUTO'`,
+     and for horizontal ones `counterAxisSizingMode='AUTO'`): **no `resize()`
+     with a fixed height** that crops text/children (= "too-short/cropped
+     frames"). `clipsContent` off on component containers.
+   - **No "manual" text labels** next to the components: Figma already shows the
+     component/variant name. Don't add decorative TEXT to the page.
+   - After the layout: verify **overlap=0** (bounding boxes) **and** that every
+     component contains its children (no child overflowing the frame).
+   - **Re-verify after EVERY sizing fix:** changing the size of an
+     already-placed component (typically: fixed size → hug) shifts the columns
+     and can recreate overlap/clipping → re-lay out and re-run the check. The
+     Components page check must be redone as the **LAST step**, after all fixes.
+3. **Screens** — COMPOSE the screens from component **INSTANCES**
+   (`component.createInstance()`), NOT redrawing by hand what is already a
+   component. Only the screen-specific scaffold (hero, header, signature) is
+   built ad hoc; the rest are instances with text/variant overrides.
+4. **Cover** — design the `📕 Cover` page as a **Community-style thumbnail**
+   (≈1920×960): brand/wordmark + tagline + a visual preview + meta (cluster,
+   screen count, desktop+mobile, accessibility). It's what shows in the file
+   list/Community.
+Building screens before components = the WRONG order: redo starting from the
+components.
 
-**Nessuna pagina vuota:** a fine build TUTTE le pagine devono avere contenuto —
-`📕 Cover`, `📖 Foundations & Docs` (specimen token + documentazione/crediti),
-`🧩 Components`, `🖥 Screens`. Una pagina vuota = build incompleto.
+**No empty pages:** at the end of the build ALL pages must have content —
+`📕 Cover`, `📖 Foundations & Docs` (token specimen + documentation/credits),
+`🧩 Components`, `🖥 Screens`. An empty page = an incomplete build.
 
-- **4a. Copy (parallelo):** lancia l'agente `design-content` (anche piu' istanze) per
-  copy realistico nella lingua scelta.
-- **4b. Videate multiple** (set per archetipo), **composte da istanze**. Desktop + mobile dove sensato.
-- **4c. File organizzato come la Community:** pagine `📕 Cover · 📖 Foundations & Docs ·
-  🧩 Components · 🖥 Screens` (+ `🌊 Flows` se serve). **Foundations e Documentation
-  stanno in UNA pagina unica** (specimen token + documentazione/crediti affiancati).
-- **4d. Figma Production Standards (obbligatori):** Auto Layout ovunque sensato;
-  **layer naming leggibile** (mai "Rectangle 42"); text styles + color variables +
-  spacing/radius tokens; **component variants** con stati; constraints responsive;
-  componenti separati dalle istanze; nessun gruppo disordinato. Il file dev'essere
-  usabile da un designer umano dopo la generazione.
-- **4e. UI States (obbligatori):** per ogni componente interattivo almeno
-  default/hover/focus/active/disabled (+ error/success dove rilevante). Per ogni
-  schermata con dati: loading / empty / populated.
-- **4f. Responsive:** definisci grid desktop, comportamento tablet/mobile,
-  breakpoint, nav mobile (hamburger accessibile), riordino sezioni, scaling tipo,
-  gestione immagini, CTA mobile.
-- **4g. Decision Register (memoria di stato):** scrivi i token finali, gli stili e i
-  componenti base in un path temporaneo dell'ambiente corrente
-  (`<tmp>/<project>-decisions.md` — vedi `dataset-tooling-agents.md`) e **rileggilo
-  prima di ogni nuova schermata** (scritture sequenziali: rischio amnesia tra schermate).
-- **4h. Scritture sequenziali:** mai `use_figma` in parallelo (un solo costruttore).
-- **Codice** se richiesto: HTML+CSS moderno, mobile-first, accessibile, multi-pagina,
-  con **Motion Direction** (cosa anima, durata, easing, trigger, funzione, fallback
-  reduced-motion) e un **Feasibility & Performance Gate** (effetti realizzabili,
-  immagini ottimizzabili, performance mobile).
+- **4a. Copy (parallel):** launch the `design-content` agent (multiple instances
+  if useful) for realistic copy in the chosen language.
+- **4b. Multiple screens** (the archetype's set), **composed from instances**.
+  Desktop + mobile where sensible.
+- **4c. File organized like the Community:** pages `📕 Cover ·
+  📖 Foundations & Docs · 🧩 Components · 🖥 Screens` (+ `🌊 Flows` if needed).
+  **Foundations and documentation live on ONE page** (token specimen +
+  documentation/credits side by side).
+- **4d. Figma Production Standards (mandatory):** Auto Layout wherever sensible;
+  **readable layer naming** (never "Rectangle 42"); text styles + color
+  variables + spacing/radius tokens; **component variants** with states;
+  responsive constraints; components separated from instances; no messy groups.
+  The file must be usable by a human designer after generation.
+- **4e. UI States (mandatory):** for every interactive component at least
+  default/hover/focus/active/disabled (+ error/success where relevant). For
+  every data screen: loading / empty / populated.
+- **4f. Responsive:** define the desktop grid, tablet/mobile behaviour,
+  breakpoints, mobile nav (accessible hamburger), section reflow, type scaling,
+  image handling, mobile CTA.
+- **4g. Decision Register (state memory):** write the final tokens, styles and
+  base components to a temp path of the current environment
+  (`<tmp>/<project>-decisions.md` — see `dataset-tooling-agents.md`) and
+  **re-read it before every new screen** (sequential writes: amnesia risk
+  between screens).
+- **4h. Sequential writes:** never `use_figma` in parallel (a single builder).
+- **Code** if requested: modern HTML+CSS, mobile-first, accessible, multi-page,
+  with a **Motion Direction** (what animates, duration, easing, trigger,
+  function, reduced-motion fallback) and a **Feasibility & Performance Gate**
+  (buildable effects, optimizable images, mobile performance).
 
-## 5. GATE Verifica render (bloccante, sull'output reale)
-Dopo ogni schermata, lancia l'agente **`design-verifier`** (read-only, in parallelo
-per schermata) con `fileKey`+`nodeId`. **NON dichiarare la schermata "fatta" / "ok"
-prima che il verifier sia PASS**: aspetta il suo esito e risolvi gli issue (le
-scritture restano sequenziali). Un testo tagliato in un rail stretto o una caption che
-sfora NON si vedono in uno screenshot a bassa risoluzione — fidati del verifier, non
-dell'occhio sul thumbnail. **Verifica con uno screenshot OGNI pagina costruita, non
-solo le schermate** — anche `📕 Cover`, `📖 Foundations & Docs` (specimen) e
-`🧩 Components` soffrono lo stesso crop da size fisse. Cerca gli **errori noti**:
-1. **Altezza/larghezza frame / clipping:** ogni contenitore auto-layout deve **HUG**
-   il contenuto (`primaryAxisSizingMode='AUTO'`, e l'asse opposto `counterAxisSizingMode=
-   'AUTO'` per le altezze). **Gotcha ricorrente:** `resize(w,h)` su un frame auto-layout
-   ne forza il sizing a **FIXED** → se `h` e' piccolo (es. 10) il frame **croppa** i
-   figli. Dopo ogni `resize()` ri-asserisci `AUTO` sull'asse che deve crescere (o usa
-   `layoutSizing*`), poi **controlla via codice** che ogni figlio stia dentro il padre
-   (bbox) prima di considerare la pagina fatta.
-2. **Dimensioni componenti:** niente nodi a 0px, TEXT a larghezza ~0, FILL collassati,
-   immagini senza fill reale.
-3. **Layout strani:** overflow oltre i bordi, sovrapposizioni, allineamenti rotti.
-4. **Testo:** troncato, line-height che taglia i glifi.
-5. **Design QA:** allineamenti globali, padding coerente, ritmo verticale, gerarchia
-   heading, consistenza card/bottoni, leggibilita' testi piccoli, stati interattivi.
-6. **Contrasto** ri-misurato sull'output (anche testo su immagini).
+## 5. Render verification GATE (blocking, on the real output)
+After every screen, launch the **`design-verifier`** agent (read-only, in
+parallel per screen) with `fileKey`+`nodeId`. **Do NOT declare the screen
+"done"/"ok" before the verifier PASSES**: wait for its verdict and resolve the
+issues (writes stay sequential). Truncated text in a narrow rail or an
+overflowing caption is NOT visible in a low-res screenshot — trust the
+verifier, not your eye on the thumbnail. **Screenshot-verify EVERY built page,
+not just the screens** — `📕 Cover`, `📖 Foundations & Docs` (specimen) and
+`🧩 Components` suffer the same fixed-size crop. Look for the **known errors**:
+1. **Frame height/width / clipping:** every auto-layout container must **HUG**
+   its content (`primaryAxisSizingMode='AUTO'`, and the opposite axis
+   `counterAxisSizingMode='AUTO'` for heights). **Recurring gotcha:**
+   `resize(w,h)` on an auto-layout frame forces its sizing to **FIXED** → if
+   `h` is small (e.g. 10) the frame **crops** its children. After every
+   `resize()` re-assert `AUTO` on the axis that must grow (or use
+   `layoutSizing*`), then **check via code** that every child fits inside its
+   parent (bbox) before considering the page done.
+2. **Component sizes:** no 0px nodes, no TEXT at ~0 width, no collapsed FILLs,
+   no images without a real fill.
+3. **Broken layout:** overflow past the edges, overlaps, broken alignment.
+4. **Text:** truncated, line-height clipping the glyphs.
+5. **Design QA:** global alignment, consistent padding, vertical rhythm, heading
+   hierarchy, card/button consistency, small-text legibility, interactive states.
+6. **Contrast** re-measured on the output (including text over images).
 
 ## 6. Final Design Score
-Valuta 1–5: Originalita' visiva · Coerenza col dataset · Distanza dalle reference ·
-Chiarezza UX · Accessibilita' · Qualita' tipografica · Responsive · Memorabilita' ·
-Realismo contenuto · Scalabilita' del design system.
-**Ancore (per ridurre soggettivita'):**
-- *Originalita'*: 5 = signature chiara, non riconducibile a template; 3 = buono ma
-  riconducibile a pattern comuni; 1 = generico/derivativo.
-- *Chiarezza UX*: 5 = scopo e azione primaria ovvi in 5s, zero ambiguita'; 3 = chiaro
-  con qualche frizione; 1 = confuso.
-- *Accessibilita'*: 5 = tutto AA misurato + focus/target/reduced-motion; 3 = AA sul
-  testo ma lacune; 1 = fallimenti di contrasto.
-**< 4 su Originalita' o Chiarezza UX → itera** (torna a 2.5 o 3).
+Rate 1–5: Visual originality · Dataset coherence · Distance from references ·
+UX clarity · Accessibility · Typographic quality · Responsive · Memorability ·
+Content realism · Design-system scalability.
+**Anchors (to reduce subjectivity):**
+- *Originality*: 5 = clear signature, not traceable to a template; 3 = good but
+  traceable to common patterns; 1 = generic/derivative.
+- *UX clarity*: 5 = purpose and primary action obvious in 5s, zero ambiguity;
+  3 = clear with some friction; 1 = confusing.
+- *Accessibility*: 5 = everything AA measured + focus/target/reduced-motion;
+  3 = AA on text but gaps; 1 = contrast failures.
+**< 4 on Originality or UX clarity → iterate** (back to 2.5 or 3).
 
 ## 7. Final Output
-Consegna sempre: link al file Figma/codice, **creative thesis**, reference usate,
-tabella observed→applied, token principali, schermate create, check accessibilita' e
-UX, note immagini/licenze, assunzioni e limiti.
+Always deliver: the Figma/code link, the **creative thesis**, the references
+used, the observed→applied table, the main tokens, the screens created, the
+accessibility & UX checks, image/licensing notes, assumptions and limits.
 
-## 7.1 Design System Output Spec (Standard+ / obbligatorio in Studio)
-Documenta il sistema cosi' che sia **riutilizzabile** da un umano, non solo bello:
-color tokens · typography tokens · spacing scale · radius scale · shadows/elevation ·
+## 7.1 Design System Output Spec (Standard+ / mandatory in Studio)
+Document the system so it's **reusable** by a human, not just pretty: color
+tokens · typography tokens · spacing scale · radius scale · shadows/elevation ·
 grid · components · component variants · interaction states · motion tokens ·
-**usage rules** · **anti-patterns**. In Figma vive nelle pagine Foundations +
-Components; in codice come tokens + README.
+**usage rules** · **anti-patterns**. In Figma it lives on the Foundations +
+Components pages; in code as tokens + a README.

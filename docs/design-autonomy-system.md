@@ -138,6 +138,6 @@ alla skill orchestratrice:
 ## Stato
 
 - Skill orchestratrice: `.claude/skills/design-from-references/SKILL.md` (incorpora i gate + Originality Engine).
-- Metodo di design: skill `webartist` (`~/.claude/skills/webartist`).
-- Comando: `/crea-design`.
+- Metodo di design: skill `webartist` (`.claude/skills/webartist`, inclusa nel repo).
+- Comando: `/design` (alias italiano: `/crea-design`).
 - Vedi anche: [figma-kit-blueprint.md](figma-kit-blueprint.md), README.md.
