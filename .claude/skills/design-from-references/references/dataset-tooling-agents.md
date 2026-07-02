@@ -2,9 +2,11 @@
 
 ## Dataset & categories (gate 0)
 `Glob data/datasets/*/dataset.json` → the available categories are the datasets
-present. If the requested category has no dataset (or it's thin/monotonous/
-stale) → invoke the **`dataset-builder`** agent to build it with online
-research, then proceed. Don't invent references.
+present. If the project has none, sample datasets ship at the repo/plugin root
+(`<skill root>/../../../data/datasets/`, text only — no screenshots): use them
+in place or copy the category into the project. If the requested category has
+no dataset (or it's thin/monotonous/stale) → invoke the **`dataset-builder`**
+agent to build it with online research, then proceed. Don't invent references.
 
 **Dataset — expected shape** (`data/datasets/<category-slug>/dataset.json`,
 written by `dataset-builder`; if a field is missing degrade gracefully, don't
@@ -86,5 +88,6 @@ touching the creative framework).
 - Anti-clipping: after adding the children, set `primaryAxisSizingMode='AUTO'`
   on the root (a `resize(w,900)` leaves it fixed).
 
-**Contrast audit:** `node .claude/skills/design-from-references/scripts/contrast.js
-"#fg:#bg" ...` (exit 1 if at least one pair FAILs).
+**Contrast audit:** `node <skill root>/scripts/contrast.js "#fg:#bg" ...`
+(exit 1 if at least one pair FAILs). When launching `design-verifier`, pass it
+the script's absolute path.

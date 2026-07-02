@@ -1,0 +1,15 @@
+{
+  "name": "design-from-references",
+  "description": "Research-driven design generation for Claude Code: skills + agents that measure award-winning sites and build original, accessible Figma design systems.",
+  "owner": {
+    "name": "Michele Dal Santo",
+    "url": "https://github.com/micheledalsanto"
+  },
+  "plugins": [
+    {
+      "name": "design-from-references",
+      "source": "./",
+      "description": "Learn aesthetics from measured, award-winning sites and generate original, accessible, component-driven Figma design systems."
+    }
+  ]
+}

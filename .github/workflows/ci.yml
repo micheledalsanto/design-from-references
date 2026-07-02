@@ -1,0 +1,58 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: contrast.js — passing pairs exit 0
+        run: |
+          node .claude/skills/design-from-references/scripts/contrast.js "#fff:#000" "#6b78ff:#0b0b0b"
+          node .claude/skills/design-from-references/scripts/contrast.js "#ffffff" "#0b0b0b"
+
+      - name: contrast.js — failing pair exits 1
+        run: |
+          if node .claude/skills/design-from-references/scripts/contrast.js "#777:#999"; then
+            echo "expected exit 1 for a failing pair" && exit 1
+          fi
+
+      - name: contrast.js — invalid input exits 2
+        run: |
+          node .claude/skills/design-from-references/scripts/contrast.js "nope:#000" || code=$?
+          if [ "${code:-0}" -ne 2 ]; then
+            echo "expected exit 2 for invalid input, got ${code:-0}" && exit 1
+          fi
+
+      - name: contrast.js — known ratios
+        run: |
+          node -e '
+            const { parseHex, ratio } = require("./.claude/skills/design-from-references/scripts/contrast.js");
+            const check = (fg, bg, expected) => {
+              const r = ratio(parseHex(fg), parseHex(bg));
+              if (Math.abs(r - expected) > 0.01) { console.error(`${fg}/${bg}: got ${r}, expected ${expected}`); process.exit(1); }
+            };
+            check("#ffffff", "#000000", 21);
+            check("#fff", "#000", 21);      // 3-digit expansion
+            check("#777777", "#777777", 1);
+            console.log("ratios ok");
+          '
+
+      - name: plugin + dataset JSON are well-formed
+        run: |
+          node -e '
+            const fs = require("fs");
+            const files = [".claude-plugin/plugin.json", ".claude-plugin/marketplace.json",
+                           ...fs.readdirSync("data/datasets", { withFileTypes: true })
+                               .filter(d => d.isDirectory())
+                               .map(d => `data/datasets/${d.name}/dataset.json`)];
+            for (const f of files) { JSON.parse(fs.readFileSync(f, "utf8")); console.log("ok", f); }
+          '

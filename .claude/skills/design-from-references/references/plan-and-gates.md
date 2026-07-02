@@ -74,7 +74,10 @@ what to avoid.
 
 ## 3.6 Accessibility GATE (blocking, on the plan)
 Measure every text/background pair:
-`node .claude/skills/design-from-references/scripts/contrast.js "#fg:#bg" ...`
+`node <skill root>/scripts/contrast.js "#fg:#bg" ...`
+(`<skill root>` = the directory this skill was loaded from — in a project
+checkout `.claude/skills/design-from-references`, in a plugin install the
+plugin's copy.)
 Text ≥ 4.5:1; large (≥24px or ≥18.66 bold)/UI/borders ≥ 3:1. If a measured
 accent fails as text (typical blue/purple on black), do NOT use it for text:
 derive a readable variant and keep the "true" accent for fills/lines/large

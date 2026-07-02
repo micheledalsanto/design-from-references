@@ -14,7 +14,9 @@ inspect and report. The builder (whoever invoked you) will apply the fixes.
 2. `get_screenshot` of the node (FULL): download the PNG with `curl` and LOOK
    at it (Read on the image). Compare the render with the structure.
 3. If given the text/background tokens, measure contrast with
-   `node .claude/skills/design-from-references/scripts/contrast.js "#fg:#bg" ...`.
+   `node <path>/contrast.js "#fg:#bg" ...` — the invoker passes the script's
+   path (it ships with the design-from-references skill); if it doesn't,
+   compute the WCAG 2.x relative-luminance ratio inline with `node -e`.
 
 ## Known errors to look for (checklist)
 - **Clipping / frame height**: does the root/section height match the content?

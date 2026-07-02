@@ -1,0 +1,25 @@
+{
+  "name": "design-from-references",
+  "displayName": "Design from References",
+  "version": "0.4.0",
+  "description": "Learn aesthetics from measured, award-winning sites and generate original, accessible, component-driven Figma design systems. Ships the design-from-references orchestrator, the webartist method, and four research/QA agents.",
+  "author": {
+    "name": "Michele Dal Santo",
+    "url": "https://github.com/micheledalsanto"
+  },
+  "homepage": "https://github.com/micheledalsanto/design-from-references#readme",
+  "repository": "https://github.com/micheledalsanto/design-from-references",
+  "license": "MIT",
+  "keywords": ["figma", "design-systems", "design", "wcag", "accessibility", "mcp", "agents"],
+  "skills": [
+    "./.claude/skills/design-from-references",
+    "./.claude/skills/webartist"
+  ],
+  "commands": ["./.claude/commands/"],
+  "agents": [
+    "./.claude/agents/dataset-builder.md",
+    "./.claude/agents/design-content.md",
+    "./.claude/agents/design-verifier.md",
+    "./.claude/agents/image-sourcer.md"
+  ]
+}

@@ -3,9 +3,12 @@ node_modules/
 package-lock.json
 .pnpm-store/
 
-# Generated datasets (created on demand by the dataset-builder agent).
-/data/datasets/*
-!/data/datasets/README.md
+# Datasets: the measured data (dataset.json + design.md) is committed and
+# shareable; screenshots are NOT (size + third-party site copyright) —
+# regenerate them locally with the dataset-builder agent if you want them.
+/data/datasets/**/*.png
+/data/datasets/**/*.jpg
+/data/datasets/**/*.webp
 
 # OS / editor cruft
 .DS_Store
