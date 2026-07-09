@@ -3,12 +3,10 @@ node_modules/
 package-lock.json
 .pnpm-store/
 
-# Datasets: the measured data (dataset.json + design.md) is committed and
-# shareable; screenshots are NOT (size + third-party site copyright) —
-# regenerate them locally with the dataset-builder agent if you want them.
-/data/datasets/**/*.png
-/data/datasets/**/*.jpg
-/data/datasets/**/*.webp
+# Datasets: reference material is generated LOCALLY per category by the
+# dataset-builder agent and is NOT committed (third-party site names, URLs,
+# screenshots). Run the agent to build the datasets you need.
+/data/datasets/
 
 # OS / editor cruft
 .DS_Store
@@ -32,3 +30,7 @@ tmp/
 .env
 .env.local
 *.key
+
+# Stray QA screenshots: skill temp renders belong in tmp/qa/ (already ignored
+# via tmp/); safety net for PNGs mistakenly saved in the repo root
+/*.png
