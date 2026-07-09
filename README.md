@@ -132,10 +132,8 @@ The long skill is split into a lean orchestrator (`SKILL.md`) plus **on-demand `
 Then, with the Figma MCP connected:
 
 ```text
-# 0) Three sample datasets are included (corporate-website,
-#    ecommerce-organic-food, fintechApps) — measured data + per-site analysis.
-
-# 1) Build / refresh a category dataset (real online research)
+# 0) Build a category dataset first — reference material is generated
+#    locally by the dataset-builder agent (nothing is bundled with the repo).
 "Use the dataset-builder agent for the 'restaurant' category"
 
 # 2) Generate a design
