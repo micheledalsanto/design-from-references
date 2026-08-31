@@ -24,13 +24,18 @@ No sourceless line.
      from a measured reference and rejected on sight. The tally's FONTS row
      flags the offenders (Inter, Poppins, DM Sans, Manrope, Figtree, Outfit,
      Sora, Space Grotesk, Geist, Satoshi, Playfair, Cormorant, Spectral, IBM
-     Plex, Space/JetBrains Mono). If the cluster's fonts are all flagged, pick
-     from the *licensed* tier the datasets are full of (Fruitiger, Financier
+     Plex, Space/JetBrains Mono). These are **"needs a stated reason", not
+     "never"**: 15 of the 70 references do use one (Inter on 10). The reason
+     they lose by default is the other number — **60 of 70 carry a proprietary
+     display face**. So pick from that *licensed* tier (Fruitiger, Financier
      Display, Canela, Signifier, Founders Grotesk, Goldenbook, Scto Grotesk…)
-     or their nearest Figma-available equivalents, and say so.
-  Also: **do not use one superfamily for headings + body + data** — that flat
-  technical neutrality is itself a slop signal; check the tally's TYPE PAIRING
-  row. **Propose 3 alternatives verified as available in Figma**, with the voice
+     or the nearest Figma-available equivalents, and say so.
+  Also: **pair two families by default** rather than running headings, body and
+  data off one superfamily — that flat neutrality reads as generated. It is a
+  default, not a law: measured across the datasets it is **45 two-family vs 25
+  single**, and single-family *wins* in corporate-website (6-4). Let the tally's
+  TYPE PAIRING row decide for your cluster.
+  **Propose 3 alternatives verified as available in Figma**, with the voice
   of each, and get agreement before propagating type through the system.
   → detail and the reasoning: `references/antiSlop.md`.
 - **Colours (FROM DATA):** the CORE palette comes from the colours MEASURED in

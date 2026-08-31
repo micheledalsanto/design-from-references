@@ -27,14 +27,28 @@ IBM Plex (any) · Space Mono · JetBrains Mono
 `scripts/datasetTally.js` flags these automatically in the FONTS row.
 
 **Why they read as slop:** they are the default suggestions of every AI tool and
-every free-font listicle, so they carry no brand signal. Real brands in these
-categories license or commission faces — the datasets are full of them
-(Fruitiger, Financier Display, Canela, Signifier, Founders Grotesk, Goldenbook,
-Scto Grotesk, Visuelt, Portrait). Reach for that tier of choice instead.
+every free-font listicle, so they carry no brand signal.
 
-**One superfamily for headings + body + data is itself a slop signal.** It
-produces a flat technical neutrality no real brand has. Pair two families with
-different voices (the tally's TYPE PAIRING row counts what the references do).
+**Be honest about what the data says** *(measured across the 7 bundled datasets,
+2026-08-31)*: these faces are **not absent from real sites** — 15 of the 70
+references use one, Inter alone on 10. The argument is not "no good site uses
+Inter", which would be false. It is that **60 of the 70 references carry a
+proprietary or licensed display face** (Epicene Text, Goldenbook, Canela,
+Signifier, Portrait, Founders Grotesk, Freight Display, Darby Sans…), and that
+tier is where the category's identity actually lives. Reaching for a blacklist
+face is choosing the one option that reads as *unchosen* — and this user has
+rejected it on sight, including when it was measured (IBM Plex).
+
+So: treat the list as **"needs a reason", not "never"**. If the cluster you are
+designing for genuinely runs on one of these, say so with the count and use it
+deliberately. What is banned is picking it *by default*.
+
+**One superfamily for headings + body + data tends to read as generated** — a
+flat technical neutrality. But "no real brand does this" would be wrong:
+*measured 2026-08-31*, the references split **45 two-family vs 25 single-family**,
+and single-family actually **wins in corporate-website (6-4)** and ties in
+longevityClinic. So pair two voices as the default, and let the tally's TYPE
+PAIRING row overrule it when your cluster genuinely runs on one family.
 
 **How to choose:** propose **3 alternatives verified as available in Figma**
 (`listAvailableFontsAsync`), explain the voice of each, and get agreement before
@@ -57,15 +71,19 @@ choice needs far more than "it seems more characterful".
 distinctive direction — it is the recognizable default of every generated
 portfolio.** So is:
 
-- an italicised keyword inside a headline
-- fully desaturated or B&W photography
-- abstract or brutalist architecture photos
-- huge empty sections carrying one sentence
-- mono type used for "technical" flavour
+- an italicised keyword inside a headline *(6/70 references — but 3 of the 6 are
+  longevityClinic, where it is a genuine convention)*
+- fully desaturated or B&W photography *(37 colour vs 2 desaturated)*
+- abstract or brutalist architecture photos *(not countable from the notes —
+  judge on the screenshots)*
+- huge empty sections carrying one sentence *(6/70)*
+- mono type used for "technical" flavour *(6/70 — but **4/10 of
+  corporate-website**: do not ban it there)*
 
 None of these are banned in principle. Each is banned **unless a counted
-majority of the dataset does it** — that is what gate 2c enforces, and
-`datasetTally.js` + `designNotesScan.js` give you the count.
+majority of the cluster does it** — that is what gate 2c enforces, and
+`datasetTally.js` + `designNotesScan.js` give you the count. The per-category
+concentrations above are why the ban is per-cluster, not global.
 
 **Correction — headline size was wrongly on this list.** It was added from a
 hand count that the measured evidence contradicts. `designNotesScan.js` reads
@@ -95,20 +113,30 @@ this section. The approved work in this repo (Tirage, Firn, Otava v2) has
 
 ---
 
-## 4. Brand names must not describe the product
+## 4. Brand names must not be abstract quality-nouns
 
 Rejected: **Meridian · Baseline · Ledger · Cadence** — "please, no AI slop
 names".
 
-Slop names are the ones that *describe* the offering, in the abstract-noun
-register every generator reaches for. Real brands in these categories do not:
-**Neko** (Japanese for cat) · **Ezra** (a given name) · **Lanserhof** (a place
-name) · **Tally** (a plain verb). Approved: **Otava** (Finnish for the Big
-Dipper).
+**The problem is not description — it is the abstract-noun register.** Checking
+the 70 reference brands makes the line clear, and it is not "never describe the
+product": plenty of real, concrete names do, and work — **Poster Club**,
+**Paper Collective**, **Farm to People**, **Imperfect Foods**, **Moneybox**,
+**Thrive Market**, **Function Health**. Those name a *thing* in plain language.
 
-Pick from: real words in another language, given names, place names, plain
-common words. Avoid: compound abstractions, Latin-sounding coinages, anything
-that reads as the product category with the letters rearranged.
+What was rejected — Meridian, Baseline, Ledger, Cadence — is the other thing:
+an **abstract noun gesturing at a quality**, the register every generator
+defaults to. It could belong to any company in any category, which is precisely
+the failure.
+
+Also good, and the other half of the references: real words in another language
+(**Neko** — Japanese for cat), given names (**Ezra**), place names
+(**Lanserhof**, **Azulik**), plain verbs (**Tally**, **Plum**, **Wise**).
+Approved for this user: **Otava** (Finnish for the Big Dipper).
+
+Avoid: abstract quality-nouns, Latin-sounding coinages, and anything that reads
+as the product category with the letters rearranged. **Test:** would the name
+fit three competitors in the same sector? Then it is not a name.
 
 ---
 
@@ -168,3 +196,26 @@ the opposite: **7 of 9 sites above 56px** in longevityClinic (100 · 88 · 80 ·
 food and art e-commerce sit below. → removed from the ban in `SKILL.md` and
 above; big type is category-dependent. **Lesson: a hand count felt
 authoritative and was wrong. Prefer a scripted count, and keep the evidence.**
+
+**2026-08-31 — audit of every remaining rule.** After the 56px correction, each
+quantitative claim in the skill was re-measured against the 7 bundled datasets
+instead of trusted as written. Result: **no other rule was outright false**, but
+four were stated too strongly and are now qualified with their counts.
+- *Dark background* — holds everywhere: light wins **7/7** categories.
+- *Desaturated photography* — holds: **37 colour vs 2 desaturated** where stated.
+- *Italic keyword* (6/70), *mono type* (6/70), *huge empty sections* (6/70) —
+  hold globally, but are **concentrated**: 3 of the 6 italics are longevityClinic,
+  and **4 of the 6 mono faces are corporate-website (4/10 of that category)**.
+  A blanket ban would be wrong there → gate 2c now carries a per-category column.
+- *Slop fonts* — the honest number: **15 of 70 references use one, Inter on 10**.
+  "No real site uses these" was false. The defensible claim is that **60 of 70
+  carry a proprietary display face**. Rule reworded to "needs a reason", not
+  "never".
+- *One superfamily* — **45 two-family vs 25 single**, but single-family **wins in
+  corporate-website (6-4)** and ties in longevityClinic. Softened from "no real
+  brand does this".
+- *Descriptive brand names* — too broad: Poster Club, Farm to People, Imperfect
+  Foods, Function Health, Moneybox all describe and all work. The real target is
+  the **abstract quality-noun** (Meridian, Cadence). Rewritten.
+**Lesson: the first audit found a false rule; the second found true rules stated
+too absolutely. Both come from writing a count from memory instead of measuring.**

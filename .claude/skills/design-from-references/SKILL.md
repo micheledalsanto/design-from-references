@@ -169,12 +169,21 @@ Run in order; for detail load the indicated `references/` file.
     with a full-bleed photo hero and you open with a bare type hero, you are
     wrong, not brave. Name the reference each section derives from.
   - **2c. HOUSE-STYLE BAN (blocking).** These are the agent's defaults, not
-    design decisions. Do NOT use unless a *counted majority* of the dataset does:
-    italicised keyword inside a headline · dark/near-black background · fully
-    desaturated or B&W photography · abstract or brutalist architecture photos ·
-    huge empty sections with one sentence · mono type used for "technical"
-    flavour. If you reach for one of these, stop: it is the house style leaking,
-    and the user has rejected it before.
+    design decisions. Do NOT use unless a *counted majority of the cluster you
+    are designing for* does. Each one below was re-measured across the 7 bundled
+    datasets on 2026-08-31 — the count is the reason it is on the list, and the
+    per-category note is there so you don't over-apply it:
+    | Banned by default | Measured across the datasets | Watch out |
+    | --- | --- | --- |
+    | dark / near-black background | light wins in **7/7** categories (9-1, 7-0, 10-1, 7-3, 8-4, 7-3, 9-1) | never the majority anywhere, but cookieConsent/fintech/corporate run 3-4 dark sites |
+    | fully desaturated or B&W photography | **37 colour vs 2 desaturated** where the notes state it | the 2 are both in longevityClinic |
+    | italicised keyword in a headline | **6/70** notes mention italics at all | **3 of the 6 are longevityClinic** (Ezra, Fountain Life, Function Health) — there it is a real convention, not a tell |
+    | mono type for "technical" flavour | **6/70** sites have a measured mono face | **4/10 of corporate-website** — do NOT ban it in that category |
+    | huge empty sections with one sentence | **6/70** notes describe extreme whitespace | concentrated in longevityClinic (3) and corporate (2) |
+    | abstract / brutalist architecture photos | not counted — no reliable phrase in the notes | judge on the screenshots; the rejection case was a B&W concrete corridor in a *medical* context, i.e. an image with no narrative function |
+    If you reach for one of these, stop: it is the house style leaking, and the
+    user has rejected it before. **But check the per-category column first — a
+    global ban applied to the wrong category is the same error in reverse.**
     **Headline size is NOT on this list — count it, don't assume it.** It was
     listed here on the strength of a hand count that the measured evidence
     contradicts: `designNotesScan.js` reads the H1 sizes stated in the
