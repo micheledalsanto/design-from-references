@@ -53,6 +53,16 @@ Un design è "fatto" solo se TUTTO è verde:
 ## Strumenti del sistema
 
 - **Selezione stile**: `GET /api/directive` → `styleClusters` (chiedi quale).
+- **Conteggio del dataset** (gate 2a, prima di fissare qualunque direzione):
+  `scripts/datasetTally.js <categoria>` misura fondo chiaro/scuro, zone di tinta
+  libere per l'accento, font segnalati come slop, accoppiamento tipografico e
+  sezioni comuni, e scrive `<tmp>/<categoria>-constraints.md` — i cui verdetti
+  sono **vincolanti** e vanno riletti quando si fissano i token e nella critica
+  interna. `scripts/designNotesScan.js <categoria>` conta ciò che il JSON non
+  registra (composizione hero, fotografia, dimensione titoli, statistiche,
+  loghi stampa) leggendo i `design.md`; risponde `unknown` invece di inventare.
+  Serve perché un design tracciato correttamente a **1 reference su 10** è stato
+  rifiutato e rifatto: la citazione era vera, la maggioranza diceva il contrario.
 - **Contrast audit**: `.claude/skills/design-from-references/scripts/contrast.js`
   (WCAG 2.x, ratio per coppie hex). Da eseguire su tutte le coppie testo/sfondo del
   piano e sui token usati come testo.
