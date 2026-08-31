@@ -1,20 +1,49 @@
 # PLAN + plan gates (3 → 3.9)
 
 ## 3. PLAN
+**Before writing a single token: re-read `<tmp>/<category>-constraints.md`**
+(written by `scripts/datasetTally.js` at gate 2a). Its verdicts are binding —
+background lightness, accent hue free zones, type pairing, the sections that
+must appear, and the by-eye rows you filled from the screenshots. The tally
+exists because a design was once built on 1 reference out of 10 and rejected;
+counting it and then not consulting it is the same failure with extra steps.
+Every deviation goes in that file's Deviations table **with the user's
+agreement**, before you build on it.
+
 Tokens (4–6 colours with a role), typography, layout concept + wireframe, motion
 language — each **traced to**: the observed reference *or* the creative thesis.
 No sourceless line.
-- **Fonts (FROM DATA, not at random) — blocking:** read the REAL `font-family`
-  values from the dataset (`sites[].fonts` of the cluster: display/body/mono).
-  Use THOSE; if one isn't available in Figma (`listAvailableFontsAsync`) pick
-  the closest equivalent and **declare the substitution**. Picking "default"
-  fonts (Cormorant, Playfair, Inter, Spectral, Roboto Mono, Geist…) is
-  **FORBIDDEN**: a font that isn't among the measured ones or a declared
-  equivalent = you're defaulting — go back to the data.
+- **Fonts — two filters, both blocking.** A font must pass BOTH:
+  1. **FROM DATA:** read the REAL `font-family` values from the dataset
+     (`sites[].fonts` of the cluster: display/body/mono) and use THOSE. If one
+     isn't available in Figma (`listAvailableFontsAsync`) pick the closest
+     equivalent and **declare the substitution**. Inventing a font that is
+     neither measured nor a declared equivalent = you're defaulting — go back
+     to the data.
+  2. **NOT SLOP:** *being measured does not clear a font.* IBM Plex was taken
+     from a measured reference and rejected on sight. The tally's FONTS row
+     flags the offenders (Inter, Poppins, DM Sans, Manrope, Figtree, Outfit,
+     Sora, Space Grotesk, Geist, Satoshi, Playfair, Cormorant, Spectral, IBM
+     Plex, Space/JetBrains Mono). If the cluster's fonts are all flagged, pick
+     from the *licensed* tier the datasets are full of (Fruitiger, Financier
+     Display, Canela, Signifier, Founders Grotesk, Goldenbook, Scto Grotesk…)
+     or their nearest Figma-available equivalents, and say so.
+  Also: **do not use one superfamily for headings + body + data** — that flat
+  technical neutrality is itself a slop signal; check the tally's TYPE PAIRING
+  row. **Propose 3 alternatives verified as available in Figma**, with the voice
+  of each, and get agreement before propagating type through the system.
+  → detail and the reasoning: `references/antiSlop.md`.
 - **Colours (FROM DATA):** the CORE palette comes from the colours MEASURED in
   the dataset (`sites[].bg/colors/accent`). Every deviation must be **declared
   as an invention** with a reason — never a silent default. If the dataset
   palette is monotonous, extend it with `dataset-builder`, not with your taste.
+  - **Base surface follows the tally's BACKGROUND verdict.** Light means light.
+    This is the exact call that got a design deleted.
+  - **Accent: take a FREE HUE ZONE.** The tally lists which 30° bands the
+    references already occupy and which are free. Picking a crowded band gives
+    you the category cliché (e.g. the terracotta 15–18° everyone in longevity
+    uses); an empty band reads as the brand's own while staying native to the
+    category. Say which zone you took and which you avoided.
 - **Evidence Quality:** for every dataset-observed decision mark the source
   quality — *High* (seen in several cluster sites or clearly measured) /
   *Medium* (a single site but cluster-consistent) / *Low* (subjective
@@ -102,8 +131,22 @@ in parallel by the `design-content` agent.)
   the file. Re-read the texts before closing and fix every off-language sentence.
 
 ## 3.9 Internal Critic Pass (blocking)
-Brutally critique the plan *before* building: what looks generic? copied? weak
-hierarchy? not memorable? confusing? hard to implement? Fix it. Then two tests:
+**Start with the mechanical check, not with taste.** Re-open
+`<tmp>/<category>-constraints.md` and walk the plan against it row by row:
+
+| Check | Fails if |
+| --- | --- |
+| Base surface vs BACKGROUND verdict | plan is dark, tally says LIGHT (or vice versa) |
+| Accent hue vs occupied bands | accent sits in a band 2+ references already own |
+| Display/body vs slop list | either face is flagged, or both come from one superfamily |
+| Sections vs SECTIONS ≥50% | a section the majority always ships is missing |
+| Opening section | the page opens differently from the majority |
+| Each by-eye row | plan contradicts a row you counted |
+| Every contradiction above | not present in the Deviations table with user agreement |
+
+Any unexplained failure → fix the plan, or go get agreement. Only then critique
+by judgement: what looks generic? copied? weak hierarchy? not memorable?
+confusing? hard to implement? Fix it. Then two tests:
 - **One-Screen Test:** does the first screen communicate in 5s what the product
   is, why it's relevant, what the user can do, the atmosphere, what makes it
   different? If the hero is interchangeable with another product → redo the

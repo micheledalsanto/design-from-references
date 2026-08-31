@@ -28,6 +28,27 @@ aesthetics only.
      already-placed component (typically: fixed size → hug) shifts the columns
      and can recreate overlap/clipping → re-lay out and re-run the check. The
      Components page check must be redone as the **LAST step**, after all fixes.
+   - **RUN THE OVERLAP SCRIPT — do not eyeball it (blocking).** Screenshotting
+     single nodes (`node.screenshot()`) will NEVER reveal page-level collisions:
+     each node renders fine in isolation while sitting on top of its neighbour.
+     You MUST run this on the Components page and get `overlaps: []`:
+     ```js
+     const page = figma.root.children.find(p=>p.name.includes("Components"));
+     await figma.setCurrentPageAsync(page);
+     const b = page.children.map(n=>({name:n.name,x:n.x,y:n.y,r:n.x+n.width,btm:n.y+n.height}));
+     const overlaps=[];
+     for(let i=0;i<b.length;i++)for(let j=i+1;j<b.length;j++){
+       const A=b[i],B=b[j];
+       if(A.x<B.r&&A.r>B.x&&A.y<B.btm&&A.btm>B.y) overlaps.push([A.name,B.name]);
+     }
+     return { overlaps, count: overlaps.length };
+     ```
+     Then take ONE `get_screenshot` of the whole Components **page node** and
+     LOOK at it. Both checks, every time, before declaring the build done.
+   - **Each variant of a set must show DIFFERENT representative content.** When
+     you `clone()` a variant to add an axis, the clone carries the original's
+     text: a 5-variant set all reading "ApoB 94" documents nothing. Give every
+     variant its own realistic case.
 3. **Screens** — COMPOSE the screens from component **INSTANCES**
    (`component.createInstance()`), NOT redrawing by hand what is already a
    component. Only the screen-specific scaffold (hero, header, signature) is

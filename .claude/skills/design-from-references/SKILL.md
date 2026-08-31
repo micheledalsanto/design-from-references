@@ -19,6 +19,7 @@ when you reach that phase (don't read them all upfront):
 
 | When | Load |
 | --- | --- |
+| Before fixing type, palette, naming or direction (2a → 3) | `references/antiSlop.md` |
 | Originality Engine (gate 2.5) | `references/originality-engine.md` |
 | Plan + plan gates (3 → 3.9) | `references/plan-and-gates.md` |
 | Build, render verification, score, output (4 → 7.1) | `references/build-verify-output.md` |
@@ -99,6 +100,18 @@ Match depth to scope. If the user doesn't specify → **Standard**.
 - **Studio** → variants explored · mobile for EVERY screen · extended component
   library · documented cross-pollination · complete Design System Output Spec.
 
+## Early Look Gate (blocking, before building anything else)
+As soon as tokens and type exist, build **ONE full screen top to bottom** (hero
++ at least 3 real sections, real copy, real images) and show the user a
+screenshot of the **whole page**, side by side with the closest dataset
+screenshot. Ask plainly whether the direction is right.
+- Do NOT build the component library, the other screens, the mobile versions or
+  the cover before that answer.
+- Isolated component screenshots do NOT satisfy this gate: a set of tidy
+  components tells you nothing about whether the page reads as generic.
+- If the user rejects the direction, go back to **2a/2b** and re-count the
+  dataset. Do not "fix" it by adjusting details of the rejected direction.
+
 ## Gate Priority (conflict resolution)
 If two constraints conflict (e.g. the thesis wants extreme type but
 accessibility limits it), this order wins:
@@ -118,18 +131,72 @@ Run in order; for detail load the indicated `references/` file.
   cluster · deliverable · language** (never default the cluster: categories
   often have >1). Fix the **Strategic Brief + Brand Positioning** (target, goal,
   primary action, archetype, 5s takeaway) and **one** Success Metric.
-- **2. RESEARCH (dataset = aesthetics ONLY).** Read `dataset.json` + the cluster
-  sites' `design.md` + the **full-page desktop & mobile screenshots**. Extract
-  aesthetic DNA (palette/type/rhythm), NOT structure/content. Cross-pollination
-  ~20% (mandatory in Studio). Monotonous dataset → extend it with
-  `dataset-builder`, not with your defaults.
+- **2. RESEARCH — the dataset constrains AESTHETICS *and* STRUCTURE.** Read
+  `dataset.json` + the cluster sites' `design.md` + **actually LOOK at the
+  full-page desktop & mobile screenshots** (Read the PNGs — do not just read the
+  JSON). Content and copy stay yours; palette, type, rhythm **and page
+  architecture** come from the references. Cross-pollination ~20% (mandatory in
+  Studio). Monotonous dataset → extend it with `dataset-builder`, not with your
+  defaults.
+  - **2a. COUNT BEFORE YOU CHOOSE (blocking) — RUN THE SCRIPT, don't eyeball.**
+    ```
+    node <skill root>/scripts/datasetTally.js <category> [--cluster "<label>"]
+    ```
+    It prints the fixed-schema tally (background light/dark, accent hue
+    occupancy + free zones, measured fonts with slop flags, type pairing,
+    sections present in ≥50% of sites, opening section) and **writes
+    `<tmp>/<category>-constraints.md`**. **Print the tally to chat.**
+    Then run the second script, which counts the dimensions the JSON does not
+    record by reading the `design.md` prose:
+    ```
+    node <skill root>/scripts/designNotesScan.js <category> [--cluster "…"] [--quotes]
+    ```
+    It reports each dimension as a majority **with the sentence it counted**
+    (`--quotes`), or as `unknown` when the notes are silent. **`unknown` is an
+    honest answer, not a failure: resolve those on the screenshot yourself and
+    never invent the missing value.** A `WEAK` verdict means too few notes
+    stated it — confirm it by eye before trusting it.
+    Copy the resulting counts into the *by-eye* rows of the constraints file.
+    **Leaving those rows blank blocks gate 2.5** — they are the dimensions past
+    rejections actually turned on.
+    Then follow the MAJORITY. Going against it needs an explicit, stated reason
+    and the user's agreement — "it feels more distinctive" is NOT a reason —
+    and it goes in the **Deviations** table of the constraints file.
+    A single outlier site is never the model.
+  - **2b. STEAL THE STRUCTURE, NOT THE SKIN.** Originality belongs in the
+    signature component, the copy and the palette — NOT in inventing a page
+    architecture the whole category has already tested. If every reference opens
+    with a full-bleed photo hero and you open with a bare type hero, you are
+    wrong, not brave. Name the reference each section derives from.
+  - **2c. HOUSE-STYLE BAN (blocking).** These are the agent's defaults, not
+    design decisions. Do NOT use unless a *counted majority* of the dataset does:
+    italicised keyword inside a headline · dark/near-black background · fully
+    desaturated or B&W photography · abstract or brutalist architecture photos ·
+    huge empty sections with one sentence · mono type used for "technical"
+    flavour. If you reach for one of these, stop: it is the house style leaking,
+    and the user has rejected it before.
+    **Headline size is NOT on this list — count it, don't assume it.** It was
+    listed here on the strength of a hand count that the measured evidence
+    contradicts: `designNotesScan.js` reads the H1 sizes stated in the
+    `design.md` files and finds >56px is the *majority* in longevityClinic
+    (7/9: 100 · 88 · 80 · 78 · 70 · 64 · 56.2px), fintechApps and
+    corporate-website, while food and art e-commerce sit below. Big type is a
+    category-dependent fact, not a universal tell. Run the scan.
+    Same for **slop fonts** (Inter, Poppins, DM Sans, IBM Plex, Playfair,
+    Cormorant… — the tally flags them) and **descriptive brand names**
+    (Meridian, Ledger, Cadence). Being measured in the dataset does NOT clear
+    them. → **read `references/antiSlop.md`** before fixing type or naming.
 - **2.5 ORIGINALITY ENGINE** (the heart): Thesis · 3 Territories · Anti-Copy
   Distance · Signature · Make It Less Expected · Trend Filter. Show
   thesis+territories+choice. → **load `references/originality-engine.md`**.
-- **3 → 3.9 PLAN + plan gates:** tokens/fonts/colours **from measured data**
-  (never a silent default), Evidence Quality, Harmonization, IA+Journey,
-  Component Strategy, Image Art Direction, **Accessibility GATE** (contrast.js),
-  **UX GATE**, Content Realism, **Internal Critic**.
+- **3 → 3.9 PLAN + plan gates:** **re-read `<tmp>/<category>-constraints.md`
+  first** — the tally's verdicts are binding on tokens, type and page
+  architecture; a choice that contradicts one goes in its Deviations table with
+  the user's agreement, or it doesn't ship. Then: tokens/fonts/colours **from
+  measured data** (never a silent default, never a slop font), Evidence Quality,
+  Harmonization, IA+Journey, Component Strategy, Image Art Direction,
+  **Accessibility GATE** (contrast.js), **UX GATE**, Content Realism,
+  **Internal Critic** (which re-checks the plan against the constraints file).
   → **load `references/plan-and-gates.md`**.
 - **4. BUILD** (you create the product): copy in parallel (`design-content`),
   multiple screens, Community-style file sections, production standards, UI
@@ -156,3 +223,15 @@ Critic (3.9) and Render verification (5) gates all green, plus a Final Score
 After each real run note: gates that were too slow · redundant output ·
 insufficient dataset · still-generic spots. Use them to refine the skill, not
 the current output.
+
+**Write them down or they evaporate.** Append to `references/antiSlop.md`
+(section *Run log*) — a repo file, so the lesson survives the session and ships
+with the plugin. One entry per rejected or corrected run: what was chosen, what
+the user said, what the count actually was, which rule changed.
+
+**A rule in this skill is only as good as its evidence.** If a run contradicts
+a rule written here, the rule loses — fix it and record the measurement.
+That already happened once: "headlines above ~56px" sat in the house-style ban
+on the strength of a hand count, until `designNotesScan.js` measured 7/9 of the
+references above 56px. **Prefer a scripted count over a remembered one**, and
+when you state a number in this skill, name the script that produced it.
