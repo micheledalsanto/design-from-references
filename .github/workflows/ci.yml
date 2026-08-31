@@ -46,6 +46,87 @@ jobs:
             console.log("ratios ok");
           '
 
+      - name: datasetTally.js — runs on every bundled dataset
+        run: |
+          for d in data/datasets/*/; do
+            c=$(basename "$d")
+            [ -f "$d/dataset.json" ] || continue
+            node .claude/skills/design-from-references/scripts/datasetTally.js "$c" --out "$RUNNER_TEMP/$c.md" > /dev/null
+            test -s "$RUNNER_TEMP/$c.md" || { echo "no constraints file written for $c" && exit 1; }
+            grep -q "Deviations" "$RUNNER_TEMP/$c.md" || { echo "constraints file for $c lacks the Deviations table" && exit 1; }
+          done
+
+      - name: datasetTally.js — bad input exits 2
+        run: |
+          node .claude/skills/design-from-references/scripts/datasetTally.js noSuchCategory || code=$?
+          if [ "${code:-0}" -ne 2 ]; then echo "expected exit 2 for unknown category, got ${code:-0}" && exit 1; fi
+          unset code
+          node .claude/skills/design-from-references/scripts/datasetTally.js || code=$?
+          if [ "${code:-0}" -ne 2 ]; then echo "expected exit 2 with no arguments, got ${code:-0}" && exit 1; fi
+
+      - name: datasetTally.js — verdicts match the data
+        run: |
+          node -e '
+            const { execFileSync } = require("child_process");
+            const out = execFileSync("node", [
+              ".claude/skills/design-from-references/scripts/datasetTally.js",
+              "longevityClinic", "--out", process.env.RUNNER_TEMP + "/lc.md",
+            ], { encoding: "utf8" });
+            // 9 of the 10 sites sit on a light background: the verdict that a
+            // rejected design got wrong by hand.
+            if (!/light 9 \| dark 1/.test(out)) { console.error("background tally changed:
+" + out); process.exit(1); }
+            if (!/-> LIGHT/.test(out)) { console.error("expected a LIGHT verdict"); process.exit(1); }
+            // Fonts measured in the dataset must still be flagged as slop.
+            if (!/SLOP-FLAGGED/.test(out)) { console.error("slop flagging is not firing"); process.exit(1); }
+            console.log("tally verdicts ok");
+          '
+
+      - name: designNotesScan.js — runs and never invents a value
+        run: |
+          for d in data/datasets/*/; do
+            c=$(basename "$d")
+            [ -f "$d/dataset.json" ] || continue
+            node .claude/skills/design-from-references/scripts/designNotesScan.js "$c" > /dev/null
+          done
+          node .claude/skills/design-from-references/scripts/designNotesScan.js noSuchCategory || code=$?
+          if [ "${code:-0}" -ne 2 ]; then echo "expected exit 2 for unknown category, got ${code:-0}" && exit 1; fi
+
+      - name: designNotesScan.js — headline sizes are read, not assumed
+        run: |
+          node -e '
+            const { execFileSync } = require("child_process");
+            const out = execFileSync("node", [
+              ".claude/skills/design-from-references/scripts/designNotesScan.js",
+              "longevityClinic", "--json",
+            ], { encoding: "utf8" });
+            const scan = JSON.parse(out);
+            const h = scan.dimensions.find((d) => d.key === "HEADLINE SIZE");
+            // The measurement that disproved the hand-written ">56px is slop" rule.
+            if (h.counts[">56px"] !== 7) { console.error("expected 7 sites above 56px, got " + JSON.stringify(h.counts)); process.exit(1); }
+            // Silence must stay silence: unknown is a valid answer, never a guess.
+            const align = scan.dimensions.find((d) => d.key === "TEXT ALIGNMENT");
+            if (align.unknown !== 10) { console.error("alignment should be unknown for all 10 notes, got " + align.unknown); process.exit(1); }
+            console.log("scan counts ok");
+          '
+
+      - name: every site has the design.md the scan reads
+        run: |
+          node -e '
+            const fs = require("fs"), path = require("path");
+            let missing = 0;
+            for (const c of fs.readdirSync("data/datasets", { withFileTypes: true }).filter(d => d.isDirectory())) {
+              const dir = path.join("data/datasets", c.name);
+              const ds = JSON.parse(fs.readFileSync(path.join(dir, "dataset.json"), "utf8"));
+              for (const s of ds.sites || []) {
+                const rel = s.design || `${s.slug}/design.md`;
+                if (!fs.existsSync(path.join(dir, rel))) { console.error("missing " + c.name + "/" + rel); missing++; }
+              }
+            }
+            if (missing) process.exit(1);
+            console.log("design.md coverage ok");
+          '
+
       - name: plugin + dataset JSON are well-formed
         run: |
           node -e '

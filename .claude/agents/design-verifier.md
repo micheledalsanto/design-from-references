@@ -38,6 +38,14 @@ inspect and report. The builder (whoever invoked you) will apply the fixes.
 - **Excessive similarity to the references**: the composition doesn't replicate
   a single source site one-to-one (hero/rhythm/navigation). If it looks like a
   clone → flag it.
+- **Dataset constraints honoured** (only if the invoker passes the path to
+  `<tmp>/<category>-constraints.md`): read it and check the *rendered* screen
+  against the binding verdicts — base surface lightness, accent hue, the
+  sections the majority always ships, and the by-eye rows. A verdict may be
+  overruled **only** if that row appears in the file's Deviations table. Flag
+  any contradiction that is not recorded there.
+  This closes the loop: the constraints bind the plan, and without this check
+  nothing verifies that the built screen still matches what was counted.
 
 ## Output (fixed structure)
 Return ONLY a report:

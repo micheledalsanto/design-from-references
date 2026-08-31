@@ -116,8 +116,10 @@ components.
 ## 5. Render verification GATE (blocking, on the real output)
 After every screen, launch the **`design-verifier`** agent (read-only, in
 parallel per screen) with `fileKey`+`nodeId` (+ the absolute path of this
-skill's `scripts/contrast.js`, + the reminder that screenshots are downloaded
-to `tmp/qa/`, never the repo root). **Do NOT declare the screen
+skill's `scripts/contrast.js`, + **the absolute path of
+`<tmp>/<category>-constraints.md`** so it can check the built screen against
+the counted verdicts, + the reminder that screenshots are downloaded to
+`tmp/qa/`, never the repo root). **Do NOT declare the screen
 "done"/"ok" before the verifier PASSES**: wait for its verdict and resolve the
 issues (writes stay sequential). Truncated text in a narrow rail or an
 overflowing caption is NOT visible in a low-res screenshot — trust the

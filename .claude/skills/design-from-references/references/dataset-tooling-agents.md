@@ -35,7 +35,9 @@ What the parallel agents must return (defined in `.claude/agents/`):
   buzzwords/lorem.
 - **`design-verifier`** (read-only) — checks: frame clipping/height, contrast,
   layout/overflow, hierarchy, **component states**, responsive, **excessive
-  similarity to the references**, **presence of the signature element**.
+  similarity to the references**, **presence of the signature element**, and —
+  when passed the constraints file path — **that the rendered screen still
+  honours the counted verdicts** (unrecorded contradictions are a FAIL).
   Reports PASS/FAIL with nodeIds and fixes; doesn't modify Figma.
 - **`image-sourcer`** — relevant real photos via search+fetch (no API key);
   returns `localPath`, `sourceUrl`, `author`, `platform`, `alt`, `treatment`.
