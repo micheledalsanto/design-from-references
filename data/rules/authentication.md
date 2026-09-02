@@ -7,16 +7,24 @@ sounds plausible and appears in no standard.
 Sources, both read 2026-09-02:
 - OWASP Authentication Cheat Sheet —
   https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html
-- NIST SP 800-63B, Digital Identity Guidelines —
-  https://pages.nist.gov/800-63-3/sp800-63b.html
+- **NIST SP 800-63B-4** (Revision 4, final July 2025) — the current one —
+  https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+  PDF: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-63B-4.pdf
+
+Re-verified 2026-09-02 after the rule was questioned as implausible. The check
+found a real error: the first draft cited **Revision 3**, which Revision 4
+superseded. Rev 4 does not soften the rule, it hardens it — see below.
 
 ## Length
 
 | Rule | Value | Source |
 | --- | --- | --- |
-| Minimum, MFA enabled | **8** characters | OWASP: "shorter than 8 characters are considered to be weak" |
-| Minimum, no MFA | **15** characters | OWASP: "If MFA is not enabled passwords shorter than 15 characters are considered to be weak" |
-| Maximum | **at least 64** | OWASP: "Maximum password length should be at least 64 characters to allow passphrases" |
+| Minimum, password is the only factor | **15** characters, **SHALL** | NIST 800-63B-4 §3.1.1.2: "SHALL require passwords that are used as a single-factor authentication mechanism to be a minimum of 15 characters in length" |
+| Minimum, part of MFA | **8** characters, **SHALL** | NIST: "MAY allow passwords that are only used as part of multi-factor authentication processes to be shorter but SHALL require them to be a minimum of eight characters" |
+| Maximum | **at least 64**, SHOULD | NIST: "SHOULD permit a maximum password length of at least 64 characters" |
+
+The two standards agree on the numbers. NIST states them as conformance
+requirements; OWASP frames the same thresholds as what counts as weak.
 
 **12 is not a number OWASP uses.** If a design states a minimum, it must state
 which of the two cases it is in. A signup form with no MFA step says 15.
@@ -44,12 +52,18 @@ This is the rule most likely to be overridden by whoever reviews the design,
 because it contradicts twenty years of habit. The verbatim wording, NIST SP
 800-63B section 5.1.1.2:
 
-> "Verifiers SHOULD NOT impose other composition rules (e.g., requiring
-> mixtures of different character types or prohibiting consecutively repeated
-> characters) for memorized secrets."
+**Revision 4, section 3.1.1.2 — the binding one:**
 
-> "Verifiers SHOULD NOT require memorized secrets to be changed arbitrarily
-> (e.g., periodically)."
+> "Verifiers and CSPs **SHALL NOT** impose other composition rules (e.g.,
+> requiring mixtures of different character types) for passwords."
+
+> "Verifiers and CSPs **SHALL NOT** require subscribers to change passwords
+> periodically. However, verifiers SHALL force a change if there is evidence
+> that the authenticator has been compromised."
+
+Revision 3 said SHOULD NOT; Revision 4 says **SHALL NOT**. In NIST's own
+terminology that is the difference between a recommendation and a requirement:
+the rule was strengthened, not relaxed.
 
 **Why the checklist makes passwords worse.** `Password1!` satisfies every
 composition rule ever written and is among the first guesses in any attack.
