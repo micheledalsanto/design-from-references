@@ -48,13 +48,16 @@ jobs:
 
       - name: datasetTally.js — runs on every bundled dataset
         run: |
-          for d in data/datasets/*/; do
+          found=0
+          for d in test/fixtures/datasets/*/; do
             c=$(basename "$d")
             [ -f "$d/dataset.json" ] || continue
-            node .claude/skills/design-from-references/scripts/datasetTally.js "$c" --out "$RUNNER_TEMP/$c.md" > /dev/null
+            found=1
+            node .claude/skills/design-from-references/scripts/datasetTally.js "$c"               --dataset-root test/fixtures/datasets --out "$RUNNER_TEMP/$c.md" > /dev/null
             test -s "$RUNNER_TEMP/$c.md" || { echo "no constraints file written for $c" && exit 1; }
             grep -q "Deviations" "$RUNNER_TEMP/$c.md" || { echo "constraints file for $c lacks the Deviations table" && exit 1; }
           done
+          [ "$found" = 1 ] || { echo "no fixture dataset found: these assertions were passing vacuously" && exit 1; }
 
       - name: datasetTally.js — bad input exits 2
         run: |
@@ -70,12 +73,12 @@ jobs:
             const { execFileSync } = require("child_process");
             const out = execFileSync("node", [
               ".claude/skills/design-from-references/scripts/datasetTally.js",
-              "longevityClinic", "--out", process.env.RUNNER_TEMP + "/lc.md",
+              "longevityClinic", "--dataset-root", "test/fixtures/datasets",
+              "--out", process.env.RUNNER_TEMP + "/lc.md",
             ], { encoding: "utf8" });
             // 9 of the 10 sites sit on a light background: the verdict that a
             // rejected design got wrong by hand.
-            if (!/light 9 \| dark 1/.test(out)) { console.error("background tally changed:
-" + out); process.exit(1); }
+            if (!/light 9 \| dark 1/.test(out)) { console.error("background tally changed"); process.exit(1); }
             if (!/-> LIGHT/.test(out)) { console.error("expected a LIGHT verdict"); process.exit(1); }
             // Fonts measured in the dataset must still be flagged as slop.
             if (!/SLOP-FLAGGED/.test(out)) { console.error("slop flagging is not firing"); process.exit(1); }
@@ -84,11 +87,14 @@ jobs:
 
       - name: designNotesScan.js — runs and never invents a value
         run: |
-          for d in data/datasets/*/; do
+          found=0
+          for d in test/fixtures/datasets/*/; do
             c=$(basename "$d")
             [ -f "$d/dataset.json" ] || continue
-            node .claude/skills/design-from-references/scripts/designNotesScan.js "$c" > /dev/null
+            found=1
+            node .claude/skills/design-from-references/scripts/designNotesScan.js "$c"               --dataset-root test/fixtures/datasets > /dev/null
           done
+          [ "$found" = 1 ] || { echo "no fixture dataset found" && exit 1; }
           node .claude/skills/design-from-references/scripts/designNotesScan.js noSuchCategory || code=$?
           if [ "${code:-0}" -ne 2 ]; then echo "expected exit 2 for unknown category, got ${code:-0}" && exit 1; fi
 
@@ -98,7 +104,7 @@ jobs:
             const { execFileSync } = require("child_process");
             const out = execFileSync("node", [
               ".claude/skills/design-from-references/scripts/designNotesScan.js",
-              "longevityClinic", "--json",
+              "longevityClinic", "--dataset-root", "test/fixtures/datasets", "--json",
             ], { encoding: "utf8" });
             const scan = JSON.parse(out);
             const h = scan.dimensions.find((d) => d.key === "HEADLINE SIZE");
@@ -110,13 +116,47 @@ jobs:
             console.log("scan counts ok");
           '
 
+      - name: designNotesScan.js — geometry rows never invent a value
+        run: |
+          node -e '
+            const { execFileSync } = require("child_process");
+            const out = execFileSync("node", [
+              ".claude/skills/design-from-references/scripts/designNotesScan.js",
+              "longevityClinic", "--dataset-root", "test/fixtures/datasets", "--json",
+            ], { encoding: "utf8" });
+            const scan = JSON.parse(out);
+            const get = (k) => {
+              const d = scan.dimensions.find((x) => x.key === k);
+              if (!d) { console.error("missing geometry dimension: " + k); process.exit(1); }
+              return d;
+            };
+            // The geometry rows exist. design.md rarely records radius or
+            // elevation, so on this fixture they are almost all unknown --
+            // which is the correct answer, and the one worth protecting: a
+            // future loosening of these regexes would start inventing values.
+            const radius = get("CORNER RADIUS");
+            if (radius.unknown !== 10) { console.error("CORNER RADIUS should be unknown for all 10 notes, got " + radius.unknown); process.exit(1); }
+            const uniform = get("RADIUS UNIFORMITY");
+            if (uniform.unknown !== 10) { console.error("RADIUS UNIFORMITY should be unknown for all 10, got " + uniform.unknown); process.exit(1); }
+            // SURFACE TREATMENT matches one real elevation claim here. It must
+            // stay at one: "flat bullet list" is not a flat surface, and the
+            // loose word-boundary flat pattern that counted it turned 2 into 7 in
+            // saasPricing before the pattern was tightened.
+            const surface = get("SURFACE TREATMENT");
+            if (surface.known !== 1) { console.error("SURFACE TREATMENT should have exactly 1 stated, got " + surface.known + " " + JSON.stringify(surface.counts)); process.exit(1); }
+            console.log("geometry rows ok");
+          '
+
       - name: every site has the design.md the scan reads
         run: |
           node -e '
             const fs = require("fs"), path = require("path");
             let missing = 0;
-            for (const c of fs.readdirSync("data/datasets", { withFileTypes: true }).filter(d => d.isDirectory())) {
-              const dir = path.join("data/datasets", c.name);
+            const root = "test/fixtures/datasets";
+            const cats = fs.readdirSync(root, { withFileTypes: true }).filter(d => d.isDirectory());
+            if (!cats.length) { console.error("no fixture datasets: this check was vacuous"); process.exit(1); }
+            for (const c of cats) {
+              const dir = path.join(root, c.name);
               const ds = JSON.parse(fs.readFileSync(path.join(dir, "dataset.json"), "utf8"));
               for (const s of ds.sites || []) {
                 const rel = s.design || `${s.slug}/design.md`;
@@ -132,8 +172,8 @@ jobs:
           node -e '
             const fs = require("fs");
             const files = [".claude-plugin/plugin.json", ".claude-plugin/marketplace.json",
-                           ...fs.readdirSync("data/datasets", { withFileTypes: true })
+                           ...fs.readdirSync("test/fixtures/datasets", { withFileTypes: true })
                                .filter(d => d.isDirectory())
-                               .map(d => `data/datasets/${d.name}/dataset.json`)];
+                               .map(d => `test/fixtures/datasets/${d.name}/dataset.json`)];
             for (const f of files) { JSON.parse(fs.readFileSync(f, "utf8")); console.log("ok", f); }
           '
