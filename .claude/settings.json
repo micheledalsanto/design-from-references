@@ -59,5 +59,20 @@
       "Bash(node -e \"const d=require\\('./data/datasets/cookieConsent/dataset.json'\\); console.log\\('sites:', d.sites.length\\); console.log\\('clusters:', d.clusters.map\\(c=>c.label\\)\\); d.sites.forEach\\(s=>console.log\\(s.slug, JSON.stringify\\(s.screenshots\\)\\)\\);\")",
       "Bash(node \"c:/Users/dalsa/Documents/lavori/figma-design-master/.claude/skills/design-from-references/scripts/contrast.js\" \"#091723:#FFFFFF\" \"#5A6672:#FFFFFF\" \"#052962:#FFFFFF\" \"#1C1C1C:#EAF1FA\" \"#4D4F46:#EEEFE9\" \"#2F302B:#EEEFE9\" \"#CD8407:#EEEFE9\" \"#1C1C1C:#F7F4EF\" \"#6B675F:#F7F4EF\" \"#FFB3C7:#1C1C1C\" \"#FFFFFF:#171717\" \"#C9CDD1:#171717\" \"#2A7A4E:#171717\" \"#171717:#FFFFFF\" \"#F7F4EF:#1C1C1C\")"
     ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "mcp__.*figma.*__create_new_file",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/nameGate.js\"",
+            "timeout": 15,
+            "statusMessage": "Checking the file name for AI tells"
+          }
+        ]
+      }
+    ]
   }
 }
