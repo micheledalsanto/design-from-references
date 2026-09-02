@@ -1,8 +1,14 @@
 # Authentication and password fields
 
 Measured rules, not remembered ones. Every number here names its source, because
-this file exists after a design shipped "at least 12 characters" — a figure that
-sounds plausible and appears in no standard.
+this file exists after a design shipped "at least 12 characters" — a figure I
+invented that happened to sound plausible.
+
+**Read "Which standard applies to YOUR design" before using any number here.**
+These rules are not universal: NIST binds US federal work, PCI DSS binds card
+payments and *requires* the character mixture NIST forbids, and a plain
+commercial product is bound by neither. The first draft of this file presented
+NIST as though it applied to everything, which is why that section exists.
 
 Sources, both read 2026-09-02:
 - OWASP Authentication Cheat Sheet —
@@ -10,6 +16,9 @@ Sources, both read 2026-09-02:
 - **NIST SP 800-63B-4** (Revision 4, final July 2025) — the current one —
   https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
   PDF: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-63B-4.pdf
+- **PCI DSS 4.0** §8.3.6 — binding by contract on anyone handling card
+  payments, and it *mandates* a composition rule: minimum 12 characters
+  containing both numeric and alphabetic characters.
 
 Re-verified 2026-09-02 after the rule was questioned as implausible. The check
 found a real error: the first draft cited **Revision 3**, which Revision 4
@@ -31,6 +40,9 @@ which of the two cases it is in. A signup form with no MFA step says 15.
 
 ## Composition
 
+**Applies when NIST is your regime. Under PCI DSS the opposite is required —
+see the table below.**
+
 OWASP is explicit that forced character variety is **wrong**:
 
 > "There should be no password composition rules limiting the type of characters
@@ -46,7 +58,42 @@ consecutive spaces before verifying, and SHOULD accept Unicode.
 So: no "must contain a number and a symbol" checklist, and the field must
 accept spaces.
 
-### No special characters, no uppercase, no digits: this is deliberate
+### Which standard applies to YOUR design (read this first)
+
+The rules below are not universal, and this file said they were. NIST SP
+800-63B binds **US federal agencies** and their contractors. For a commercial
+product it is an authoritative recommendation with no legal force, and the
+observation that most real signup forms still demand a symbol is correct — that
+is what the field actually looks like.
+
+Worse for the "no composition rules" line: **PCI DSS 4.0 contradicts it.**
+Anyone handling card payments is bound by contract, not by preference, and
+requirement 8.3.6 asks for a minimum of **12 characters containing both numeric
+and alphabetic characters** — a composition rule, mandated.
+
+| If the product… | Follow | Composition rules |
+| --- | --- | --- |
+| serves US federal agencies | NIST 800-63B-4 | **forbidden** (SHALL NOT) |
+| handles card payments | PCI DSS 4.0 §8.3.6 | **required**: 12+ chars, letters and digits |
+| is under HIPAA / sector rules | that sector's rule | check it, do not assume |
+| is an ordinary commercial product | your choice — NIST is the better default | none, but say why |
+
+Where two apply, the stricter governs: a payment product subject to both lands
+on 15 characters (NIST) **and** the alphanumeric mix (PCI).
+
+**So the design question is "which regime is this product in", not "what does
+the best standard say".** Ask it. If the answer is unknown, state the
+assumption in the design rather than silently picking one — and if the client
+is a bank or a shop, expect the composition rule and design for it. The `field`
+component supports either: what changes is the help text and whether a rules
+checklist appears.
+
+The rest of this section explains why NIST forbids what PCI mandates, so the
+choice is made knowingly rather than by habit.
+
+### Why NIST forbids the character mixture
+
+
 
 This is the rule most likely to be overridden by whoever reviews the design,
 because it contradicts twenty years of habit. The verbatim wording, NIST SP
@@ -122,6 +169,8 @@ choice and the secure choice disagree here, and security wins.
 ## How to use this file
 
 Read it at gate 3 whenever a design contains a password, login, or signup
-field, the same way the dataset is read for aesthetics. If a design contradicts
+field, the same way the dataset is read for aesthetics. **Start by settling
+which regime the product is in** — the answer changes the numbers and decides
+whether a composition rule belongs on screen. If a design contradicts
 a rule here, it goes in the constraints file's Deviations table with a reason,
 or it does not ship.
