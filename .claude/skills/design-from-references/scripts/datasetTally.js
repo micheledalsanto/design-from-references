@@ -95,6 +95,13 @@ const EYE_ROWS = [
   ['PRESS / CLIENT LOGOS', 'yes / no'],
   ['COMPARISON TABLE', 'yes / no'],
   ['CUSTOMER FACES', 'yes / no'],
+  // Geometry: the most cited NON-typographic tell of generated design is one
+  // radius, one padding and one shadow on every surface. dataset.json records
+  // no geometry, so these are by-eye rows fed by designNotesScan.js, which
+  // reads whatever the prose happens to state and says unknown otherwise.
+  ['CORNER RADIUS', 'sharp 0-4px / soft 5-16px / round >16px / pill'],
+  ['SURFACE TREATMENT', 'flat-borderless / bordered / shadowed'],
+  ['RADIUS UNIFORMITY', 'single value / varied by role'],
 ];
 
 function tallyRow(label, buckets, verdict, note) {

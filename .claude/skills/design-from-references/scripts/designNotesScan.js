@@ -219,6 +219,91 @@ const DIMENSIONS = [
       return probe(t, /comparison\s+(table|grid|chart)|versus\s+(table|grid)|\bvs\.?\s+(the\s+)?(standard|competitor|typical)|us\s+vs\b/i, null);
     },
   },
+  // --- geometry ------------------------------------------------------------
+  // Added 2026-09-02. The most cited NON-typographic tell of generated design
+  // is uniform geometry: one radius, one padding and one shadow on every
+  // surface. Nothing in this repo counted it, so a design could pass every
+  // gate and still read as machine made. dataset.json has no geometry fields,
+  // so these read the prose like the rows above — and stay `unknown` when the
+  // notes are silent, which for radius is roughly two notes in three.
+  {
+    key: 'CORNER RADIUS',
+    buckets: ['sharp (0-4px)', 'soft (5-16px)', 'round (>16px)', 'pill'],
+    run(secs) {
+      // Radius is stated wherever the note happens to describe a button or
+      // card, so scope to the whole note rather than losing two thirds of it.
+      const t = secs._all;
+      if (!t) return { verdict: 'unknown', quote: null };
+      const pill = /\b(pill[- ]shaped|pill\s+radius|full[- ]radius|fully\s+rounded)\b|radius[^.\n]{0,24}\b9999\b/i;
+      const px = /(?:border[- ]?radius|corner\s+radius|radius)[^.\n]{0,24}?`?([0-9]{1,4})(?:\s*[-–]\s*([0-9]{1,4}))?\s*px/i;
+      const sharp = /\b(sharp|square)\s+corners?\b|\bzero\s+border[- ]?radius\b|\bno\s+rounded\s+corners?\b/i;
+      let q = evidence(t, pill);
+      if (q) return { verdict: 'hit', value: 'pill', quote: q };
+      const m = px.exec(t);
+      if (m) {
+        // "8-12px" — take the low end, the value the base token would use.
+        const v = parseFloat(m[1]);
+        const val = v <= 4 ? 'sharp (0-4px)' : v <= 16 ? 'soft (5-16px)' : 'round (>16px)';
+        return { verdict: 'hit', value: val, px: v, quote: evidence(t, px) };
+      }
+      q = evidence(t, sharp);
+      if (q) return { verdict: 'hit', value: 'sharp (0-4px)', quote: q };
+      return { verdict: 'unknown', quote: null };
+    },
+  },
+  {
+    key: 'SURFACE TREATMENT',
+    buckets: ['flat/borderless', 'bordered', 'shadowed'],
+    run(secs) {
+      const t = secs._all;
+      if (!t) return { verdict: 'unknown', quote: null };
+      // Order matters: an explicit "no shadow" outranks the word "shadow".
+      // "flat bullet list" and "flat surface color" are not elevation claims:
+      // requiring an explicit shadow/elevation word removed 5 false positives
+      // in saasPricing, where 7/7 was really 2/7.
+      const noShadow = /\bno\s+(drop\s+|box[- ])?shadows?\b|\bwithout\s+shadows?\b|\bborderless\b|\bno\s+elevation\b|\bflat\s+(card|panel|surface)s?\b[^.\n]{0,30}\bno\s+shadow\b/i;
+      const shadowed = /\bbox-shadow\b|\bdrop[- ]shadows?\b|\bshadows?\s+(on|under|beneath)\b|\belevat(ion|ed)\b/i;
+      const bordered = /\b(1px|hairline|thin)\s+(solid\s+)?(border|rule)\b|\bborder:\s*1px\b|\bbordered\s+cards?\b/i;
+      let q = evidence(t, noShadow);
+      if (q) return { verdict: 'hit', value: 'flat/borderless', quote: q };
+      q = evidence(t, shadowed);
+      if (q) return { verdict: 'hit', value: 'shadowed', quote: q };
+      q = evidence(t, bordered);
+      if (q) return { verdict: 'hit', value: 'bordered', quote: q };
+      return { verdict: 'unknown', quote: null };
+    },
+  },
+  {
+    key: 'RADIUS UNIFORMITY',
+    buckets: ['varied', 'single'],
+    run(secs) {
+      // The actual tell is not the value but whether ANYONE decided: a system
+      // using one radius everywhere reads as generated, unless the references
+      // genuinely do that. Count the distinct radius values the note states.
+      const t = secs._all;
+      if (!t) return { verdict: 'unknown', quote: null };
+      const vals = new Set();
+      const re = /(?:border[- ]?radius|corner\s+radius|radius)[^.\n]{0,24}?`?([0-9]{1,4})\s*px/gi;
+      let m;
+      while ((m = re.exec(t))) vals.add(parseFloat(m[1]));
+      if (/\b(pill[- ]shaped|full[- ]radius|fully\s+rounded)\b|radius[^.\n]{0,24}\b9999\b/i.test(t)) vals.add(9999);
+      if (!vals.size) return { verdict: 'unknown', quote: null };
+      // One stated value is not proof of a single-radius system — the note may
+      // simply have described one component. Say so rather than over claiming.
+      if (vals.size === 1) {
+        return {
+          verdict: 'hit',
+          value: 'single',
+          quote: `only one radius stated (${[...vals].map((v) => (v === 9999 ? 'pill' : v + 'px')).join(', ')}) — confirm on the screenshot that it is the whole system`,
+        };
+      }
+      return {
+        verdict: 'hit',
+        value: 'varied',
+        quote: `${vals.size} distinct radii stated: ${[...vals].sort((a, b) => a - b).map((v) => (v === 9999 ? 'pill' : v + 'px')).join(', ')}`,
+      };
+    },
+  },
   {
     key: 'CUSTOMER FACES',
     buckets: ['yes', 'no'],

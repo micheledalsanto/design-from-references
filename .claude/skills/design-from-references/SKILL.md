@@ -151,6 +151,9 @@ Run in order; for detail load the indicated `references/` file.
     ```
     node <skill root>/scripts/designNotesScan.js <category> [--cluster "…"] [--quotes]
     ```
+    It covers hero composition, photography, headline size, stats, logos and
+    the **geometry** rows (corner radius, surface treatment, radius uniformity)
+    — the uniformity tell nothing here used to measure.
     It reports each dimension as a majority **with the sentence it counted**
     (`--quotes`), or as `unknown` when the notes are silent. **`unknown` is an
     honest answer, not a failure: resolve those on the screenshot yourself and
@@ -170,7 +173,7 @@ Run in order; for detail load the indicated `references/` file.
     wrong, not brave. Name the reference each section derives from.
   - **2c. HOUSE-STYLE BAN (blocking).** These are the agent's defaults, not
     design decisions. Do NOT use unless a *counted majority of the cluster you
-    are designing for* does. Each one below was re-measured across the 7 bundled
+    are designing for* does. Each one below was re-measured across the 7 local
     datasets on 2026-08-31 — the count is the reason it is on the list, and the
     per-category note is there so you don't over-apply it:
     | Banned by default | Measured across the datasets | Watch out |
@@ -211,6 +214,24 @@ Run in order; for detail load the indicated `references/` file.
   multiple screens, Community-style file sections, production standards, UI
   states, responsive, Decision Register, **sequential** `use_figma` writes.
   → **load `references/build-verify-output.md`**.
+  - **4a. COMPONENTS BEFORE THE SECOND SCREEN (blocking).** One full screen for
+    the Early Look Gate may be built directly. After that, **nothing that
+    appears twice may be built twice.** Create the masters, then compose every
+    remaining screen from instances. This has been corrected by the user on two
+    separate projects; the phrase used the second time was *"ancora una volta
+    sei partito dal design e non dai componenti"*. Retrofitting is possible and
+    safe (161 instances survived one with zero broken links) but it is rework
+    you were told to avoid.
+  - **4b. Structure the file as an object — including a one component file.**
+    Cover at 1920x960 built from a **real extract** of the built work, named
+    pages, no empty pages, documentation where each component actually sits
+    **inside** its card, and **padding on every frame including the
+    `COMPONENT_SET`** (variants are absolutely positioned and will otherwise
+    sit flush against its border). The minimum page set even for a single
+    component is Cover · Foundations · Components · Prototype. The user has
+    asked for these finishing steps on two separate projects — treat them as
+    definition of done, not polish. Detail in §7.2 of
+    `references/build-verify-output.md`.
 - **5. Render verification GATE** (`design-verifier`, on the real output):
   **PASS before saying "done"**. Known errors: clipping/height, 0-sizes,
   overflow, truncated text, QA, contrast. → same reference file as the build.

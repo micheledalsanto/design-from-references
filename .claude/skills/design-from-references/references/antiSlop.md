@@ -29,7 +29,7 @@ IBM Plex (any) · Space Mono · JetBrains Mono
 **Why they read as slop:** they are the default suggestions of every AI tool and
 every free-font listicle, so they carry no brand signal.
 
-**Be honest about what the data says** *(measured across the 7 bundled datasets,
+**Be honest about what the data says** *(measured across 7 local datasets,
 2026-08-31)*: these faces are **not absent from real sites** — 15 of the 70
 references use one, Inter alone on 10. The argument is not "no good site uses
 Inter", which would be false. It is that **60 of the 70 references carry a
@@ -169,6 +169,152 @@ Anything less is not a bold decision; it is the house style leaking.
 
 ---
 
+## 7. What outsiders name as slop — the tells this file was missing
+
+Sections 1 to 6 come from this user's own rejections, which makes them sharp and
+narrow: they are almost entirely about **type, colour, imagery and naming**. A
+survey of the public criticism of AI generated design (2026) shows the repo has
+been arguing about the visible half while a second half goes unexamined — the
+part reviewers describe as *"no human decided this"*.
+
+Two things are worth knowing before reading the list. First, it **agrees with
+this repo** on the headline tells, independently: Inter, the purple to blue
+gradient, the centred hero with one CTA, the row of identical rounded cards.
+Section 1's font list was written from one user's reaction, and the wider
+critique reaches the same names — that is corroboration, not coincidence.
+Second, and more useful, **the rest of the list is new here**, and every item is
+something the current gates do not measure.
+
+### 7a. Uniformity is a tell, and this repo never counted it
+
+The most cited non typographic tell is **sameness of geometry**: "identical
+padding, identical border radius, and identical card heights" — 16px radius
+everywhere, 24px padding everywhere, one shadow recipe cloned onto every
+surface, or worse, a different shadow per component so elevation means nothing.
+
+This is the defaulting failure in a dimension the tally has no row for.
+`datasetTally.js` counts backgrounds, hues, fonts and sections. It does not
+count radius, spacing rhythm or elevation, so a design can pass every gate in
+this skill and still read as generated because every card is the same box.
+
+**A script now counts what the prose states** *(added 2026-09-02)*.
+`designNotesScan.js` gained three rows — `CORNER RADIUS`, `SURFACE TREATMENT`
+and `RADIUS UNIFORMITY` — and `datasetTally.js` prints them among the by-eye
+rows so they reach the constraints file like every other counted verdict.
+
+Be clear about what they can and cannot tell you. `dataset.json` records no
+geometry at all, so these read the `design.md` prose, and the prose usually does
+not mention radius: across the 98 bundled notes only 33 state a radius value and
+26 mention flat or borderless. Most categories therefore come back `unknown`,
+which is the correct answer and not a failure. Where the notes do speak the
+verdicts are real — `cookieConsent` counts SOFT (5-16px), and its RADIUS
+UNIFORMITY row reads `single 4 | varied 2`.
+
+The first version of the `SURFACE TREATMENT` pattern matched a bare `flat`,
+which turned 2 genuine hits into 7 in `saasPricing` by counting "flat bullet
+list" and "flat surface color" as elevation claims. That is the same failure
+this section is about, committed while writing the check for it: **a loose
+count is worse than no count, because it looks like evidence.** CI now pins the
+tightened behaviour.
+
+**Counter-evidence worth keeping.** The Revolut note says: *"Commit to a single
+border-radius value and use it everywhere. Mixing radii feels inconsistent."*
+A real reference recommending exactly what this section warns about is the
+reminder that uniformity is not automatically slop — an undecided uniformity is.
+The question the rows are there to force is not "is it consistent" but "did
+anyone decide".
+
+**For the dimensions no script reaches** — padding rhythm, card heights — open
+the cluster's screenshots and ask
+whether the references use *one* radius or several, whether cards are bordered,
+shadowed or flat, and whether any two sections share a card height. Most
+editorial and commerce references vary these deliberately. Record the answer in
+the by-eye rows of the constraints file. Borderless and flat is the safer
+default: a shadow must earn its place by expressing a real elevation.
+
+### 7b. The states nobody builds
+
+Named in every critique, and absent from the visible design almost by
+definition: **focus, disabled, error, empty, loading**. They are "absent or
+improvised late". One published acceptance bar requires coherent hover, focus,
+disabled, error and loading or empty states before a screen is handed off at all.
+
+This repo's gate 5 checks clipping, overflow, contrast and truncation — all
+*rendering* faults. It does not ask whether the states exist. A Figma file with
+a beautiful default button and no focus variant is exactly the artefact the
+critique is describing, and it will pass every gate here today.
+
+### 7c. Accessibility failures survive an accessibility gate
+
+`contrast.js` measures colour pairs, which is the one accessibility property
+that is easy to measure and therefore the one that gets measured. The research
+is blunt that this is not enough:
+
+- A CHI study of LLM generated web UIs measured a **semantic** accessibility
+  gap: the attribute is present and meaningless — `alt="image"`, a link whose
+  text is "Click here", a heading order that is decorative rather than
+  structural. Accessibility oriented prompting reduced violations but did not
+  remove them, and semantic structure was where they persisted.
+- An analysis of 470 pull requests (December 2025) found AI generated code
+  carried **1.7x more issues and 2.74x more security vulnerabilities** than
+  human written code.
+
+The lesson for a Figma-first tool is narrow but real: **a contrast pass is not
+an accessibility pass**, and the skill currently lets the two be confused. Where
+the deliverable is code, alt text, link text and heading order need checking as
+their own thing. Where it is Figma, the layer names and the documented usage
+rules are what a developer will translate into markup, so `Rectangle 47` next to
+a photograph is the same failure one step earlier.
+
+### 7d. Motion as default finish
+
+"Hover states that do nothing." "Buttons that snap instead of easing." "A bounce
+on every hover." "Fade-in on every element." The tell is not any single choice
+but **motion applied uniformly**, which is the same defaulting failure as 7a in
+the time dimension. webartist's `anti-slop.md` already says prefer static and
+earn each animated moment; it is repeated here because motion is usually decided
+during the build, after that file has been read and closed.
+
+### 7e. Copy that says nothing, and proof that is invented
+
+The named phrases are worth reading as a blacklist because they are so
+consistent across sources: *"Build the future of work"*, *"Your all in one
+platform"*, *"Scale without limits"*, *"best in class"*, *"cutting edge"*, and
+hedged claims like *"may help you"* or *"can potentially"*. Alongside them:
+stock photography of "a diverse group of people looking at a laptop in an
+impossibly well lit office", and abstract 3D blobs.
+
+The `design-content` agent already asks for concrete copy. What is missing is
+the **fabrication rule**: a generated design that invents testimonials,
+customer logos, review counts or metrics is not just generic, it is a claim
+about a real world that does not exist. Mark invented figures as illustrative —
+the Plumbline showcase already does this with a `*` and the README says so, so
+the standard exists in this repo and simply is not written into the skill.
+
+### 7f. Where the outside critique and this repo disagree
+
+Worth stating, because adopting the list wholesale would break rules that were
+measured here:
+
+- Several sources prescribe **Playfair Display, JetBrains Mono, Bricolage
+  Grotesque** as the cure for Inter. Two of those three are on this repo's
+  slop-flagged list, measured. A remedy repeated widely enough becomes the next
+  default; that is precisely the trap section 1 documents.
+- One source recommends checking contrast with **APCA**. APCA is not WCAG 2.x
+  and is not a conformance standard today. `contrast.js` implements WCAG 2.x
+  because that is what an accessibility claim can be made against. Do not swap
+  it on the strength of a blog post.
+- The general advice to "lock your tokens in a DESIGN.md and cap the palette" is
+  what the constraints file already does, with the improvement that the values
+  are **counted from references** rather than chosen once and frozen.
+
+**Lesson: this file was built from one reviewer's rejections, so it learned
+their eye — type, colour, imagery, names — and inherited their blind spots.
+Geometry uniformity, missing states, semantic accessibility and invented proof
+are the tells that survive every gate in this skill today.**
+
+---
+
 ## Run log
 
 One entry per run that was rejected or corrected. Append here instead of
@@ -198,7 +344,7 @@ above; big type is category-dependent. **Lesson: a hand count felt
 authoritative and was wrong. Prefer a scripted count, and keep the evidence.**
 
 **2026-08-31 — audit of every remaining rule.** After the 56px correction, each
-quantitative claim in the skill was re-measured against the 7 bundled datasets
+quantitative claim in the skill was re-measured against the 7 local datasets
 instead of trusted as written. Result: **no other rule was outright false**, but
 four were stated too strongly and are now qualified with their counts.
 - *Dark background* — holds everywhere: light wins **7/7** categories.
@@ -219,3 +365,80 @@ four were stated too strongly and are now qualified with their counts.
   the **abstract quality-noun** (Meridian, Cadence). Rewritten.
 **Lesson: the first audit found a false rule; the second found true rules stated
 too absolutely. Both come from writing a count from memory instead of measuring.**
+
+**2026-09-01 — Fettle, e-bike commerce. The dash rule was over applied.**
+The user had said "no hyphens in names and wording". That was read as *strip
+every hyphen*, and the copy shipped with "e bike", "10 year guarantee",
+"all rounder", "real world range" across 98 text nodes. Verdict: *"forse hai
+evitato di mettere il - ma io intendevo solo nelle frasi in cui lo usi al posto
+della virgola (tipico dell'ai)"*.
+- **Banned:** a dash standing in for a comma, colon or full stop — "a bike that
+  lasts — and a mechanic who comes to you". That construction is the tell.
+- **Correct and required:** ordinary spelling hyphens inside compounds.
+  `e-bike`, `10-year guarantee`, `real-world range`, `mid-drive`, `all-rounder`,
+  `step-through`, `co-founder`. Removing them produces ungrammatical English,
+  which is a worse failure than the one being avoided.
+- **Still true for names:** kebab-case in dataset slugs, layer names and brand
+  names stays out. camelCase or one word.
+**Lesson: when a user bans a character, ask what the character was doing. The
+objection was to a rhetorical tic, not to orthography. Over applying a style
+rule is its own kind of slop — it produced text no native writer would write.**
+
+**2026-09-01 — same project, components built after screens. Again.**
+The home page was built screen first, then the PDP started the same way, before
+the user stopped it: *"ancora una volta sei partito dal design e non dai
+componenti"*. The word *ancora* is the point — this repeats across projects and
+is already recorded in the vault. The recovery was to delete the half built PDP,
+build the 14 masters, then retrofit the home page by replacing its ad hoc nav,
+footer, newsletter, cards and stats with instances.
+**Lesson: at gate 4, build the component set before the second screen exists.
+One full screen for the Early Look Gate is fine, but the moment a second screen
+is started, anything appearing twice must already be a component. Retrofitting
+works — 161 instances survived it with zero broken links — but it is rework.**
+
+**2026-09-01 — Kvitto, single component. Finishing skipped because the
+deliverable was "just a component".** The file shipped with four empty pages, a
+`COMPONENT_SET` at zero padding with its variants flush against the border, and
+screens padded 72/0/72/0 so content touched the canvas edge. The user asked:
+*"sistema i padding nei frame delle pagine, non lasciare pagine vuote, prepara
+la cover"* — the same three things already requested on the previous project.
+**Lesson: the file structure rules were written in the context of a 23 screen
+system, and were silently treated as not applying to a smaller deliverable.
+They apply to everything. A one component file is still opened, scrolled and
+judged as an object, and a cover built from a real extract is part of the work,
+not decoration on top of it.** §7.2 now says this explicitly and gate 5 checks
+padding and empty pages by script.
+
+**2026-09-02 — documentation audit. The green badge was measuring nothing.**
+Not a design rejection: an audit of the repo itself, asked for alongside a
+survey of the public criticism of AI design. Three findings, in ascending order
+of how badly they undercut the project's own claims.
+
+- **The CI could not have run.** A JS string literal in the `datasetTally.js`
+  verdict step contained a real line break instead of `\n`, which broke the
+  YAML block scalar. The workflow file had been invalid since the step was
+  added, so every "passing" badge in the README was reporting on a workflow
+  GitHub never parsed.
+- **Five of the dataset steps were vacuous or crashing.** `data/datasets/` is
+  gitignored, so on a clean checkout the loops `for d in data/datasets/*/`
+  matched an unexpanded literal glob and skipped their bodies, while the steps
+  that hardcoded `longevityClinic` or called `readdirSync("data/datasets")`
+  threw ENOENT. The tests that asserted the two numbers this repo is proudest
+  of — `light 9 | dark 1` and 7 sites above 56px — were the ones that could
+  never execute. Fixed by narrowing `.gitignore` to exclude only the images
+  under `data/datasets/` — 281 MB of screenshots stays out, 977 KB of
+  `dataset.json` and `design.md` comes in — so the assertions now run over all
+  ten real datasets. Verified by cloning to a clean tree and running every
+  step, then mutation testing: corrupting a `design.md` correctly fails.
+- **CONTRIBUTING asked for a PR git silently discards.** It said to open a PR
+  with `dataset.json` + the `design.md` files, while `.gitignore` excluded all
+  of `/data/datasets/`, so a contributor following the instructions produced an
+  empty PR with no warning. The same narrowing fixes this: the documented
+  workflow and the ignore rule now agree, and the counting scripts ship with
+  the measured evidence they are supposed to be counting.
+
+**Lesson: this skill's central claim is "counted, not remembered", and the
+counting was never verified to run. A test that cannot execute is worse than a
+missing test, because the badge argues it passed. When a rule says to measure,
+measure the measurement too — and prefer a check that fails loudly when it has
+nothing to check over one that quietly finds nothing to do.**
