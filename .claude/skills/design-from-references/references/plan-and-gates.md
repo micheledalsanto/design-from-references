@@ -86,6 +86,17 @@ what to avoid.
 - **Prefer proprietary graphic elements** (abstract SVGs, geometric patterns,
   custom shapes, background noise/grain, built UI mocks) over stock photos:
   often more innovative.
+- **Three ways to fill a slot, and generation is not the default.** A real
+  photograph of a real place or person → `image-sourcer`. A pattern, mark,
+  grain or UI mock → build it in Figma. **Generation** wins for abstract
+  textures, editorial illustration in a stated style, conceptual imagery with
+  no real referent, and products that do not exist yet — and it loses badly on
+  faces and food, which read as fake. When generation is the answer, run
+  **`/imagePrompts`**: it writes paste-ready prompts grounded in the counted
+  verdicts (background lightness, the free hue bands, the PHOTOGRAPHY and PHOTO
+  SUBJECT counts) rather than in your idea of what looks good, and it writes the
+  `alt` text at the same time — because an `alt` added later by somebody else is
+  how `alt="image"` happens.
 - If real photos are needed: invoke the **`image-sourcer`** agent (search +
   fetch, NO API key, NO random images) — it finds **relevant** photos on
   Unsplash/Pexels by keyword, extracts the direct URL and downloads them. Then
