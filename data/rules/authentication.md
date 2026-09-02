@@ -38,6 +38,36 @@ consecutive spaces before verifying, and SHOULD accept Unicode.
 So: no "must contain a number and a symbol" checklist, and the field must
 accept spaces.
 
+### No special characters, no uppercase, no digits: this is deliberate
+
+This is the rule most likely to be overridden by whoever reviews the design,
+because it contradicts twenty years of habit. The verbatim wording, NIST SP
+800-63B section 5.1.1.2:
+
+> "Verifiers SHOULD NOT impose other composition rules (e.g., requiring
+> mixtures of different character types or prohibiting consecutively repeated
+> characters) for memorized secrets."
+
+> "Verifiers SHOULD NOT require memorized secrets to be changed arbitrarily
+> (e.g., periodically)."
+
+**Why the checklist makes passwords worse.** `Password1!` satisfies every
+composition rule ever written and is among the first guesses in any attack.
+`four blue horses stapled` satisfies none of them and is far stronger. Forcing
+character variety does not produce random passwords, it produces *predictable*
+ones: capital at the front, digit and an exclamation mark at the end. The rule
+is not a relaxation of security, it is the finding that the checklist was
+security theatre.
+
+What replaces it, per both standards: **length**, a **strength meter**
+(OWASP names zxcvbn-ts), and a **check against breached password lists**. On a
+breach hit, NIST is prescriptive — the verifier SHALL say the secret was
+rejected, SHALL give the reason, and SHALL require a different one.
+
+So a design must **not** show a "must contain 1 uppercase, 1 number, 1 symbol"
+checklist under the field. If a stakeholder asks for one, this section is the
+answer, with the citation.
+
 **But accepting spaces is a build requirement, not copy.** An earlier draft of
 this file said the allowance was "worth saying out loud". It is not: no real
 product writes "spaces are allowed" under a password field, and a user who
