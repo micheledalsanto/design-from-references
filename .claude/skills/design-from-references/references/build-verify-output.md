@@ -183,6 +183,29 @@ not just the screens** — `📕 Cover`, `📖 Foundations & Docs` (specimen) an
    per component means elevation carries no meaning, and flat or borderless is
    the safer default.
 
+10. **WebP uploads succeed and then render as flat grey.** `upload_assets`
+   accepts `image/webp`, returns `success` with the right `sizeBytes`, and
+   `getBytesAsync` reads every byte back — and the node still renders as a flat
+   fill. Two image generators return WebP by default, so this is easy to hit.
+   **Convert to PNG before uploading**, and confirm by sampling pixels from the
+   render rather than by trusting the upload response:
+   ```python
+   from PIL import Image
+   Image.open('x.webp').convert('RGB').save('x.png', 'PNG')
+   ```
+   This is the sharpest possible case of the rule that an `IMAGE` fill can pass
+   every structural check and still show nothing.
+11. **A prototype has to be true, not just clickable.** The first wiring here
+   ran from a screen with two visible errors straight to the confirmation, on a
+   click of the submit button — a flow asserting that an invalid form submits,
+   inside a kit whose entire argument is that it must not. The user caught it:
+   *"non ha senso, attualmente il prototipo fa cliccare anche se i campi non
+   sono validi"*. Wire the flow the design is arguing for: on the rejected
+   screen the **summary link** is what advances (that is what the component is
+   for), the submit button is deliberately **dead**, and submission only
+   reaches success from a screen whose fields are actually valid. Also clone
+   screens **after** their images are placed, or the copy keeps an empty slot.
+
 **Sweep the whole file with a script, not with your eye.** Screenshots catch
 what you happen to look at; a script catches what you do not. Run one read-only
 `use_figma` pass across every page that flags:
