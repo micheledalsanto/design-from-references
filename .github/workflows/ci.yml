@@ -46,6 +46,23 @@ jobs:
             console.log("ratios ok");
           '
 
+      - name: nameCheck.js — rejects the tells, keeps real spelling
+        run: |
+          # the exact name that shipped, and the copy that shipped with it
+          for bad in "Ledger — accessible form validation kit"                      "Otava - wellness landing page"                      "design-from-references-kit"                      "Unlock seamless onboarding"; do
+            if node .claude/skills/design-from-references/scripts/nameCheck.js "$bad" > /dev/null; then
+              echo "nameCheck accepted a name it must reject: $bad" && exit 1
+            fi
+          done
+          # ordinary spelling hyphens must survive: banning them produced
+          # "e bike" and "real world range" on a shipped project once
+          for good in "Ledger, an accessible form validation kit"                       "Fettle e-bike servicing, a 10-year guarantee"                       "real-world range on a mid-drive all-rounder"                       "Kvitto, a pricing table that shows the first year total"; do
+            node .claude/skills/design-from-references/scripts/nameCheck.js "$good" > /dev/null || {
+              echo "nameCheck rejected a legitimate name: $good" && exit 1; }
+          done
+          node .claude/skills/design-from-references/scripts/nameCheck.js || code=$?
+          if [ "${code:-0}" -ne 2 ]; then echo "expected exit 2 with no arguments, got ${code:-0}" && exit 1; fi
+
       - name: datasetTally.js — runs on every bundled dataset
         run: |
           found=0

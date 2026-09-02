@@ -442,3 +442,30 @@ counting was never verified to run. A test that cannot execute is worse than a
 missing test, because the badge argues it passed. When a rule says to measure,
 measure the measurement too — and prefer a check that fails loudly when it has
 nothing to check over one that quietly finds nothing to do.**
+
+**2026-09-02 — Ledger. The dash rule was broken by the agent that wrote it.**
+The file was created as `Ledger — accessible form validation kit`, and the
+error summary shipped rows reading `Work email — enter an address in the right
+format`. The user's verdict was three words: *"hai usato di nuovo - nel nome
+del file"*. The 2026-09-01 entry in this same file already states the rule, with
+the counter-example spelled out, and the `/publish-data` command repeats it. It
+was still broken, on the first artefact built after writing it.
+
+- **What went wrong:** the rule was recorded as *documentation* and never
+  applied at the moment of naming. Reading a rule at gate 2a does not carry it
+  to gate 4, where the strings are actually typed.
+- **The fix in the work:** every pause dash became a colon, which is what the
+  sentence wanted anyway — `Work email: enter an address in the right format`
+  reads as a label followed by an instruction, not as a dramatic pause.
+- **A thing worth knowing:** `figma.root.name = …` throws
+  *"Setting the document name is currently not supported"*, and the API reports
+  the document name as `"Document"` regardless. **The file name cannot be fixed
+  by script — only by the user, in the Figma UI.** So getting it right at
+  `create_new_file` time is the only chance you get.
+
+**Lesson: check the name at the moment you type it, not in a later audit. The
+one string this skill cannot go back and repair is the file name, so it is the
+one that deserves the check most. Before calling `create_new_file`, read the
+title back and ask whether any dash in it is standing in for a comma, a colon
+or a full stop — and prefer a comma: `Ledger, an accessible form validation
+kit`.**

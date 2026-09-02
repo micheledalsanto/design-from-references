@@ -222,6 +222,27 @@ Run in order; for detail load the indicated `references/` file.
     sei partito dal design e non dai componenti"*. Retrofitting is possible and
     safe (161 instances survived one with zero broken links) but it is rework
     you were told to avoid.
+  - **4a-bis. RUN THE NAME CHECK (blocking) — don't rely on remembering.**
+    ```
+    node <skill root>/scripts/nameCheck.js "<the file name>"
+    ```
+    Exit 1 means the name ships an AI tell: a dash standing in for a comma, a
+    kebab-case slug, or a blacklisted marketing word. **Fix it and re-run until
+    it exits 0, before `create_new_file`.** Run it on the brand name, the file
+    name, page names and any headline you write.
+    This gate exists because prose did not work: the dash ban was written into
+    `antiSlop.md`, repeated in `/publish-data`, and then broken twice anyway —
+    once in a file name, once in the copy inside it. The user's verdict was
+    *"non mi sembra tu faccia constraint ma solo idee e poi le ignori"*, and
+    they were right. A rule you have to remember is a suggestion; a script that
+    exits 1 is a constraint.
+    Ordinary spelling hyphens survive on purpose (`e-bike`, `10-year
+    guarantee`, `real-world`): over-applying the ban already produced
+    ungrammatical copy once.
+    **The file name is the one string you cannot repair later:**
+    `figma.root.name = …` throws *"Setting the document name is currently not
+    supported"* and the API reads the document name as `"Document"`, so a wrong
+    file name can only be fixed by the user by hand.
   - **4b. Structure the file as an object — including a one component file.**
     Cover at 1920x960 built from a **real extract** of the built work, named
     pages, no empty pages, documentation where each component actually sits
