@@ -70,6 +70,18 @@ function scope(secs, patterns) {
   return keys.map((k) => secs[k]).join('\n');
 }
 
+// Everything EXCEPT the "Avoid" section. A note's Avoid prose describes what
+// NOT to do, so counting it inverts the meaning: GOV.UK's "avoid the visual
+// starkness (zero border-radius, no shadows)" is a warning about copying
+// GOV.UK, not an observation of it. Rare -- 1 of 69 geometry-bearing sections
+// across the datasets -- but it flips the value when it lands, so the geometry
+// rows read this instead of the raw note.
+function exceptAvoid(secs) {
+  const keys = Object.keys(secs).filter((k) => k !== '_all' && !/^avoid/.test(k));
+  if (!keys.length) return null;
+  return keys.map((k) => secs[k]).join('\n');
+}
+
 const SEC = {
   type: [/^type/, /typograph/],
   color: [/^colou?r/],
@@ -232,7 +244,7 @@ const DIMENSIONS = [
     run(secs) {
       // Radius is stated wherever the note happens to describe a button or
       // card, so scope to the whole note rather than losing two thirds of it.
-      const t = secs._all;
+      const t = exceptAvoid(secs);
       if (!t) return { verdict: 'unknown', quote: null };
       const pill = /\b(pill[- ]shaped|pill\s+radius|full[- ]radius|fully\s+rounded)\b|radius[^.\n]{0,24}\b9999\b/i;
       const px = /(?:border[- ]?radius|corner\s+radius|radius)[^.\n]{0,24}?`?([0-9]{1,4})(?:\s*[-–]\s*([0-9]{1,4}))?\s*px/i;
@@ -255,7 +267,7 @@ const DIMENSIONS = [
     key: 'SURFACE TREATMENT',
     buckets: ['flat/borderless', 'bordered', 'shadowed'],
     run(secs) {
-      const t = secs._all;
+      const t = exceptAvoid(secs);
       if (!t) return { verdict: 'unknown', quote: null };
       // Order matters: an explicit "no shadow" outranks the word "shadow".
       // "flat bullet list" and "flat surface color" are not elevation claims:
@@ -280,7 +292,7 @@ const DIMENSIONS = [
       // The actual tell is not the value but whether ANYONE decided: a system
       // using one radius everywhere reads as generated, unless the references
       // genuinely do that. Count the distinct radius values the note states.
-      const t = secs._all;
+      const t = exceptAvoid(secs);
       if (!t) return { verdict: 'unknown', quote: null };
       const vals = new Set();
       const re = /(?:border[- ]?radius|corner\s+radius|radius)[^.\n]{0,24}?`?([0-9]{1,4})\s*px/gi;
