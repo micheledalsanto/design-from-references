@@ -18,6 +18,9 @@ implementation. Score each category from 1 to 5.
    language, tone, and primary job.
 2. **Reference integrity**: Research uses real references or real-world artifacts
    and maps observations to decisions. No fake trends or sourceless taste.
+   When working from a dataset, a 5 also requires the references to be
+   **counted**, not merely cited: a choice traced to one outlier reference while
+   the majority does the opposite scores 2 at best, however honest the citation.
 3. **Distinctiveness**: The result avoids category defaults and AI-design
    cliches without becoming confusing or decorative for its own sake.
 4. **Information architecture**: Content order, hierarchy, navigation, and CTAs
@@ -48,6 +51,9 @@ implementation. Score each category from 1 to 5.
 Do not call an output successful if any of these are true:
 
 - It has no observed-to-applied mapping for new visual direction.
+- It contradicts the counted majority of its own reference set without saying so
+  and without agreement — the citation being real does not make the choice
+  representative.
 - It fails obvious contrast, keyboard, form-label, or mobile-navigation checks.
 - Repeated components have visibly inconsistent controls, CTA alignment, target
   sizes, or comparison rhythm.

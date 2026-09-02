@@ -75,6 +75,17 @@ is the traceability rule: if you can't name *where* a specific color or typeface
 came from (a named reference, a published palette, a real artifact), you didn't
 let the research drive — you decorated a default with citations.
 
+> **Traceability is necessary but not sufficient — you also have to *count*.**
+> A citation proves a choice came from *a* reference; it does not prove the
+> reference was representative. A design in this repo was built on a dark
+> background correctly traced to a real site — which happened to be **1 of 10**,
+> the other 9 being light. It was rejected and rebuilt. When working from a
+> dataset, tabulate the references on each axis and follow the majority;
+> `design-from-references` ships `scripts/datasetTally.js` and
+> `scripts/designNotesScan.js` to do exactly that, and writes the counts to a
+> constraints file the later gates re-read. Overruling the majority is allowed;
+> doing it without noticing you did is what produces the slop.
+
 **3. The imagery-free page.** The single most reliable "AI-generated" tell is a
 page that carries itself entirely on typography, color blocks, gradients, and
 CSS shapes — with **no real photography or crafted imagery**. Screenshot a few

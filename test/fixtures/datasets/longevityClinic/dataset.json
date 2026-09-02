@@ -1,0 +1,168 @@
+{
+  "category": "longevityClinic",
+  "researchedAt": "2026-08-18T14:00:00Z",
+  "sites": [
+    {
+      "url": "https://lanserhof.com/en/",
+      "slug": "lanserhof",
+      "screenshots": { "desktop": "lanserhof/desktop.png", "mobile": "lanserhof/mobile.png" },
+      "design": "lanserhof/design.md",
+      "fonts": { "display": "Fruitiger", "body": "Fruitiger", "mono": null },
+      "colors": ["#FFFFFF", "#F7F7F7", "#2C2F38", "#96BDCD"],
+      "bg": "#F7F7F7",
+      "accent": "#96BDCD",
+      "structure": ["hero", "conceptStatement", "medicalPackages", "locationsBanner", "awardsRow", "shop", "healthGuide", "resortGallery", "newsletter", "instagramFooter"],
+      "mood": ["editorial", "restrained", "spa-adjacent", "quiet luxury"],
+      "whatWorks": "A stacked three-line wordmark doubling as the hero headline, near-white/slate palette with a single powder-blue accent used almost nowhere, and zero biomarker UI on the homepage — trust is carried entirely by full-bleed photography and vocabulary, proving a longevity brand can read as pure hospitality.",
+      "avoid": "Depends entirely on exceptional consistent photography; has no data/dashboard content on the homepage at all, so it's a poor fit if biomarker visualization needs to be the hero."
+    },
+    {
+      "url": "https://www.nekohealth.com/us/en",
+      "slug": "nekoHealth",
+      "screenshots": { "desktop": "nekoHealth/desktop.png", "mobile": "nekoHealth/mobile.png" },
+      "design": "nekoHealth/design.md",
+      "fonts": { "display": "Orleans", "body": "IBM Plex Sans", "mono": null },
+      "colors": ["#FFFFFF", "#DEF2F7", "#FFF597", "#01202C", "#262C2E"],
+      "bg": "#FFFFFF",
+      "accent": "#FFF597",
+      "structure": ["hero", "scanIntro", "locationExpansion", "technologyStatement", "testimonials", "whyNeko", "faq", "pressLogos", "closingCTA", "footer"],
+      "mood": ["editorial serif", "calm", "pastel-clinical", "quiet-tech"],
+      "whatWorks": "A serif display face (Orleans) on a body-scanning AI-health brand plus a pastel sky-blue base (not saturated clinical blue) with a single yellow closing-CTA band breaks the SaaS-dashboard default entirely.",
+      "avoid": "Withholds almost all quantitative/biomarker content from the homepage; low-contrast muted text colors on pale backgrounds need legibility checks at small sizes."
+    },
+    {
+      "url": "https://www.functionhealth.com/",
+      "slug": "functionHealth",
+      "screenshots": { "desktop": "functionHealth/desktop.png", "mobile": "functionHealth/mobile.png" },
+      "design": "functionHealth/design.md",
+      "fonts": { "display": "Financier Display", "body": "FT Base", "mono": null },
+      "colors": ["#FEF9EF", "#F5EEE1", "#2A2B2F", "#DDD6CA", "#B05A36"],
+      "bg": "#FEF9EF",
+      "accent": "#B05A36",
+      "structure": ["hero", "processSteps", "diseaseMonitoring", "labTestCategories", "photoPanels", "pressLogos", "videoTestimonials", "comparisonTable", "doctorAdvisoryBoard", "pricing", "faq", "footer"],
+      "mood": ["warm editorial", "data-forward", "clinical-premium", "credentialed"],
+      "whatWorks": "A light editorial serif with italic keyword emphasis over warm cream/terracotta carries rigorously data-forward content (a row-by-row highlighted comparison table, a credentialed doctor grid) — proves 'scientific' and 'warm/editorial' aren't mutually exclusive.",
+      "avoid": "Shares its exact type/colour system with Ezra in this dataset (same design agency) — this specific serif+terracotta combination is becoming a recognizable DTC-health-tech cliche; vary it for differentiation."
+    },
+    {
+      "url": "https://www.insidetracker.com/",
+      "slug": "insideTracker",
+      "screenshots": { "desktop": "insideTracker/desktop.png", "mobile": "insideTracker/mobile.png" },
+      "design": "insideTracker/design.md",
+      "fonts": { "display": "Montserrat", "body": "Open Sans", "mono": null },
+      "colors": ["#F9F9F7", "#262626", "#00A050", "#005550", "#E7E4D3"],
+      "bg": "#F9F9F7",
+      "accent": "#00A050",
+      "structure": ["darkHero", "pressLogos", "newsletterStrip", "adviceSection", "statCallouts", "phoneDashboard", "testimonials", "enterpriseStats", "footer"],
+      "mood": ["coaching-app", "green-health", "outcome-driven", "approachable-data"],
+      "whatWorks": "A rotating ghost-type word list in the hero (Fitness/Nutrition/DNA/Blood/Sleep) visualizes data breadth without a chart, and a phone-mockup dashboard with a circular score + red/green traffic-light recommendations is the clearest 'biological score' pattern in the dataset.",
+      "avoid": "Bold-grotesk hero plus green accent is close to generic wellness-app default; the pattern only stands out because of the animated word-list device — don't use the palette alone."
+    },
+    {
+      "url": "https://tallyhealth.com/",
+      "slug": "tallyHealth",
+      "screenshots": { "desktop": "tallyHealth/desktop.png", "mobile": "tallyHealth/mobile.png" },
+      "design": "tallyHealth/design.md",
+      "fonts": { "display": "Generator", "body": "Generator", "mono": null },
+      "colors": ["#FAF9F2", "#4A0C33", "#731445", "#D93359", "#E9E8E4"],
+      "bg": "#FAF9F2",
+      "accent": "#D93359",
+      "structure": ["hero", "pressLogos", "dailyDoseSection", "startingPointSection", "epigeneticAgeReveal", "roadmapSteps", "membership", "statCallout", "testimonials", "contactForm", "footer"],
+      "mood": ["bold color-forward", "fashion-adjacent", "consumer-DTC", "dramatic"],
+      "whatWorks": "A full-bleed magenta/burgundy gradient section built entirely around one radial dot-ring 'epigenetic age: 43' visualization turns a single biomarker into the site's most dramatic, memorable moment, breaking the clinical-blue category default entirely.",
+      "avoid": "Light-weight custom sans on saturated magenta backgrounds needs careful contrast checking; back-to-back saturated sections without cream breathing room between them would fatigue fast."
+    },
+    {
+      "url": "https://superpower.com/",
+      "slug": "superpowerHealth",
+      "screenshots": { "desktop": "superpowerHealth/desktop.png", "mobile": "superpowerHealth/mobile.png" },
+      "design": "superpowerHealth/design.md",
+      "fonts": { "display": "Nb International Pro", "body": "Nb International Pro", "mono": null },
+      "colors": ["#FFFFFF", "#FAFAFA", "#FC5F2B", "#E2E2E2"],
+      "bg": "#FFFFFF",
+      "accent": "#FC5F2B",
+      "structure": ["amberHero", "pressLogos", "howItWorks", "productDashboardMockup", "priceAnchor", "doctorAdvisors", "outcomesPhotos", "socialProofGrid", "pricing", "closingHero", "footer"],
+      "mood": ["premium-tech", "backlit-warm", "engineered", "confident-restraint"],
+      "whatWorks": "Awwwards SOTD; achieves a 'dark/high-tech' mood on a pure white-background site purely through warm backlit photography and a floating tablet dashboard mockup mid-page, with one orange accent restricted to icon strokes only.",
+      "avoid": "Very long whitespace gaps between sections in the full-page view risk feeling sparse; the icon-only accent use is subtle and can get lost without reinforcement elsewhere."
+    },
+    {
+      "url": "https://www.fountainlife.com/",
+      "slug": "fountainLife",
+      "screenshots": { "desktop": "fountainLife/desktop.png", "mobile": "fountainLife/mobile.png" },
+      "design": "fountainLife/design.md",
+      "fonts": { "display": "DM Sans", "body": "DM Sans", "mono": null },
+      "colors": ["#000000", "#020202", "#1B1B1B", "#00DCF5", "#4169E1"],
+      "bg": "#000000",
+      "accent": "#00DCF5",
+      "structure": ["darkHero", "howItWorks", "memberCarousel", "detectPreventReverse", "outcomeStats", "membershipPlans", "locationsCarousel", "faq", "footer"],
+      "mood": ["near-futurist", "AI-branded", "glowing", "sci-fi-clinical"],
+      "whatWorks": "Near-black base with one glowing cyan-to-blue family applied consistently across every feature card, plus a named, visually-branded AI concierge ('Zori AI Medical Expert') that makes an abstract 'AI-powered' claim concrete.",
+      "avoid": "Uniform glow-panel treatment across every card can feel sample-like if not varied by composition; needs generous black negative space between glowing elements to avoid eye strain."
+    },
+    {
+      "url": "https://www.ezra.com/",
+      "slug": "ezra",
+      "screenshots": { "desktop": "ezra/desktop.png", "mobile": "ezra/mobile.png" },
+      "design": "ezra/design.md",
+      "fonts": { "display": "Financier Display", "body": "Ftbase", "mono": null },
+      "colors": ["#FEF9EF", "#2A2B2F", "#FFFFFF", "#B05A36"],
+      "bg": "#FEF9EF",
+      "accent": "#B05A36",
+      "structure": ["textHero", "partnershipCard", "macroPhoto", "pressLogos", "statCallout", "mortalityStat", "processSteps", "pricingGrid", "testimonialBand", "footer"],
+      "mood": ["editorial serif", "text-first", "transparent-pricing", "urgency-driven"],
+      "whatWorks": "Itemized, transparent scan pricing (exact currency, exact minutes, exact included body regions) removes ambiguity most diagnostic-scan competitors leave vague; pairs one dramatic mortality statistic with a real patient testimonial instead of a chart.",
+      "avoid": "Identical type/colour system to Function Health in this dataset — already a recognizable DTC-health-tech serif cliche; vary the accent hue or serif if differentiation matters."
+    },
+    {
+      "url": "https://prenuvo.com/",
+      "slug": "prenuvo",
+      "screenshots": { "desktop": "prenuvo/desktop.png", "mobile": "prenuvo/mobile.png" },
+      "design": "prenuvo/design.md",
+      "fonts": { "display": "Gilroy", "body": "Lato", "mono": null },
+      "colors": ["#FFFFFF", "#000000", "#003333", "#4FE88C", "#27896C"],
+      "bg": "#FFFFFF",
+      "accent": "#4FE88C",
+      "structure": ["darkGradientHero", "scanFeature", "aiInsightsPhoto", "biomarkerPhoto", "patientTestimonial", "clinicalTeamGrid", "processExplainer", "planCards", "footer"],
+      "mood": ["warm-tech-hybrid", "candid photography", "credential-dense", "premium"],
+      "whatWorks": "A black-to-teal radial gradient hero with warm candid (not stock) photography of real couples/athletes blends the dark-tech and warm-human poles; a 7-person named clinician headshot grid plus institutional/press logos gives the most credential-dense trust section in the set.",
+      "avoid": "Dark hero photography needs a strong scrim to keep white headline text legible; a 7-person credential grid needs uniform small headshots or it will overwhelm the page."
+    },
+    {
+      "url": "https://blueprint.bryanjohnson.com/",
+      "slug": "blueprintBryanJohnson",
+      "screenshots": { "desktop": "blueprintBryanJohnson/desktop.png", "mobile": "blueprintBryanJohnson/mobile.png" },
+      "design": "blueprintBryanJohnson/design.md",
+      "fonts": { "display": "DM Sans", "body": "DM Sans", "mono": null },
+      "colors": ["#F6F4EC", "#F1ECDE", "#111C35", "#5A31F4"],
+      "bg": "#F6F4EC",
+      "accent": "#5A31F4",
+      "structure": ["hero", "protocolExplainer", "founderCredibility", "productGrid", "footer"],
+      "mood": ["ecommerce-first", "founder-driven", "engineered", "unconventional"],
+      "whatWorks": "Structured as a supplement/ecommerce product catalogue rather than a clinic-booking site, with a cool navy-on-cream base and an unexpected saturated violet-blue accent (not the category's usual green/teal/terracotta) — proves longevity branding doesn't require spa or clinical cues at all.",
+      "avoid": "Trust model depends on a famous founder's personal brand and self-experimentation; harder to port without an equivalently public figure, and the broader brand carries grift criticism worth noting but not borrowing."
+    }
+  ],
+  "clusters": [
+    {
+      "label": "Clinical-Luxury / Quiet Premium",
+      "memberUrls": ["https://lanserhof.com/en/", "https://www.nekohealth.com/us/en"],
+      "summary": "Restrained, editorial, near-achromatic bases where full-bleed photography and a single humanist or serif display face carry the entire brand. Lanserhof pushes furthest into pure hospitality — a stacked wordmark hero, zero biomarker UI, and a powder-blue accent used almost nowhere. Neko Health sits at the scientific border of this cluster: a genuine serif headline (Orleans) over a pastel sky-blue/yellow palette signals calm, considered hardware rather than a dashboard-first health-tech product. Both prove that 'longevity clinic' doesn't require clinical blue or visible data to read as credible."
+    },
+    {
+      "label": "Scientific / Data-Forward",
+      "memberUrls": ["https://www.functionhealth.com/", "https://www.insidetracker.com/", "https://tallyhealth.com/"],
+      "summary": "Each site turns a single measurement into its own signature visual moment rather than defaulting to a generic chart: Function Health's row-by-row highlighted comparison table (Function vs. average checkup), InsideTracker's phone-mockup circular score with red/green traffic-light recommendations, and Tally Health's full-bleed magenta radial dot-ring 'epigenetic age: 43' reveal. Ranges from warm-editorial-serif (Function) to green-coaching-app (InsideTracker) to loud fashion-magenta (Tally) — proving data-forward doesn't mean visually uniform."
+    },
+    {
+      "label": "Dark / High-Tech / Near-Futurist",
+      "memberUrls": ["https://superpower.com/", "https://www.fountainlife.com/"],
+      "summary": "Superpower achieves this mood on a white-background site through warm backlit photography, a floating tablet-dashboard mockup, and one orange accent restricted to icon strokes — proving 'high-tech' doesn't require a literal dark UI. Fountain Life goes fully near-black with a glowing cyan-to-blue family applied uniformly across every feature card and a named, visually-branded AI concierge ('Zori'). Together they show two different routes to a futurist, AI-forward mood: one through photography and restraint, one through literal dark-mode glow."
+    },
+    {
+      "label": "Warm / Human / Trust-First",
+      "memberUrls": ["https://www.ezra.com/", "https://prenuvo.com/", "https://blueprint.bryanjohnson.com/"],
+      "summary": "Ezra and Prenuvo both lean on real, credentialed clinicians and candid (not stock) photography over warm cream or a black-to-teal gradient — Ezra adds unusually transparent itemized pricing, Prenuvo adds a 7-person named clinical team and press-heavy social proof. Blueprint breaks furthest from the pack: an ecommerce-first supplement catalogue in cool navy-on-cream with an unexpected violet-blue accent, trading clinician trust for founder-driven, self-experimentation credibility — proof this category can be sold as a purchasable protocol rather than an in-person clinic experience."
+    }
+  ]
+}

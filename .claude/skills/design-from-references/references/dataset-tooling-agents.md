@@ -35,7 +35,9 @@ What the parallel agents must return (defined in `.claude/agents/`):
   buzzwords/lorem.
 - **`design-verifier`** (read-only) — checks: frame clipping/height, contrast,
   layout/overflow, hierarchy, **component states**, responsive, **excessive
-  similarity to the references**, **presence of the signature element**.
+  similarity to the references**, **presence of the signature element**, and —
+  when passed the constraints file path — **that the rendered screen still
+  honours the counted verdicts** (unrecorded contradictions are a FAIL).
   Reports PASS/FAIL with nodeIds and fixes; doesn't modify Figma.
 - **`image-sourcer`** — relevant real photos via search+fetch (no API key);
   returns `localPath`, `sourceUrl`, `author`, `platform`, `alt`, `treatment`.
@@ -98,3 +100,23 @@ rule along when launching `design-verifier`.
 **Contrast audit:** `node <skill root>/scripts/contrast.js "#fg:#bg" ...`
 (exit 1 if at least one pair FAILs). When launching `design-verifier`, pass it
 the script's absolute path.
+
+**Design notes scan (gate 2a, second half):**
+`node <skill root>/scripts/designNotesScan.js <category> [--cluster "…"] [--quotes] [--json]`
+Counts the dimensions `dataset.json` does not record — hero composition,
+photography treatment, headline size, alignment, italic keyword, product UI,
+stat blocks, press logos, comparison table, customer faces — by reading the
+per-site `design.md` prose. Matching is **scoped to the relevant section**
+("monochrome" under Components/signature describes award badges, not the
+photography). Every dimension resolves to `hit` / `none` / `unknown`; `--quotes`
+prints the sentence behind each count so you can audit it. **It never guesses:
+`unknown` and `WEAK` mean go look at the screenshot.**
+
+**Dataset tally (gate 2a):**
+`node <skill root>/scripts/datasetTally.js <category> [--cluster "<label>"]`
+Prints the fixed-schema count and writes `<tmp>/<category>-constraints.md`.
+Flags `--dataset-root <dir>` (if the datasets aren't under `./data/datasets`)
+and `--out <path>`. Exits 2 on an unknown category/cluster, listing what's
+available. The measured rows are automatic; the by-eye rows must be filled from
+the screenshots before gate 2.5, and the whole file is re-read at gates 3 and
+3.9.

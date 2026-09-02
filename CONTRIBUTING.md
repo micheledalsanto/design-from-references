@@ -28,9 +28,21 @@ A dataset teaches the system the *measured* aesthetics of a category
    - 2–3 style clusters with meaningful labels.
 
 3. Open a PR with **`dataset.json` + the `design.md` files only**.
-   Screenshots (`*.png`) are gitignored on purpose — they're heavy and
-   full-page captures of third-party sites don't belong in the repo. Anyone
-   can regenerate them locally with `dataset-builder`.
+   Screenshots (`*.png`) are heavy full-page captures of third-party sites and
+   don't belong in the repo. Anyone can regenerate them locally with
+   `dataset-builder`.
+
+   > **Heads up — you have to force-add them.** `.gitignore` currently excludes
+   > the whole of `/data/datasets/`, not just the images, so following the
+   > instruction above as written produces an empty PR and git says nothing.
+   > Until that rule is narrowed, add the text files explicitly:
+   >
+   > ```bash
+   > git add -f data/datasets/<category>/dataset.json \
+   >            data/datasets/<category>/*/design.md
+   > ```
+   >
+   > Check what you actually staged with `git status` before pushing.
 
 Category slug convention: single word or camelCase (e.g. `fintechApps`), no
 hyphens where avoidable.
@@ -53,6 +65,24 @@ hyphens where avoidable.
   ```
 
   CI runs the same assertions plus JSON validation on every PR.
+
+- If you touch `datasetTally.js` or `designNotesScan.js`, run them against the
+  committed fixture — that is what CI does:
+
+  ```bash
+  node .claude/skills/design-from-references/scripts/datasetTally.js \
+    longevityClinic --dataset-root test/fixtures/datasets
+  node .claude/skills/design-from-references/scripts/designNotesScan.js \
+    longevityClinic --dataset-root test/fixtures/datasets
+  ```
+
+  `test/fixtures/datasets/` holds the text half of one real dataset (no
+  screenshots, ~100 KB) so the counting assertions run against measured data.
+  It exists because `data/datasets/` is gitignored, which used to leave those
+  CI steps either iterating an empty glob or crashing on a missing directory.
+  **Treat the fixture as frozen**: three CI assertions pin exact numbers from
+  it (`light 9 | dark 1`, 7 sites above 56px, alignment `unknown` for all 10).
+  Editing it to make a test pass removes the reason the test exists.
 
 ## Reporting issues
 

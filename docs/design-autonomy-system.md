@@ -53,6 +53,16 @@ Un design è "fatto" solo se TUTTO è verde:
 ## Strumenti del sistema
 
 - **Selezione stile**: `GET /api/directive` → `styleClusters` (chiedi quale).
+- **Conteggio del dataset** (gate 2a, prima di fissare qualunque direzione):
+  `scripts/datasetTally.js <categoria>` misura fondo chiaro/scuro, zone di tinta
+  libere per l'accento, font segnalati come slop, accoppiamento tipografico e
+  sezioni comuni, e scrive `<tmp>/<categoria>-constraints.md` — i cui verdetti
+  sono **vincolanti** e vanno riletti quando si fissano i token e nella critica
+  interna. `scripts/designNotesScan.js <categoria>` conta ciò che il JSON non
+  registra (composizione hero, fotografia, dimensione titoli, statistiche,
+  loghi stampa) leggendo i `design.md`; risponde `unknown` invece di inventare.
+  Serve perché un design tracciato correttamente a **1 reference su 10** è stato
+  rifiutato e rifatto: la citazione era vera, la maggioranza diceva il contrario.
 - **Contrast audit**: `.claude/skills/design-from-references/scripts/contrast.js`
   (WCAG 2.x, ratio per coppie hex). Da eseguire su tutte le coppie testo/sfondo del
   piano e sui token usati come testo.
@@ -92,6 +102,20 @@ Dopo OGNI schermata costruita, controlla e correggi:
   spaziatura coerente, immagini effettivamente piazzate (non placeholder).
 - **Testo tagliato**: line-height non taglia i glifi; headline non troncate.
 - **Contrasto** (ri-misura sull'output, anche testo su immagini).
+- **Padding dei frame e pagine vuote**: ogni frame auto-layout con un lato sotto
+  i 16px e' una segnalazione, e il `COMPONENT_SET` conta (le varianti sono
+  posizionate in assoluto e senza padding restano attaccate al bordo). Nessuna
+  pagina puo' restare vuota. Vale anche per un file con un solo componente.
+- **Stati presenti, non presunti**: per ogni componente interattivo verifica che
+  il variant set porti davvero **hover, focus e disabled**; per ogni schermata
+  con dati, che esistano lo stato **vuoto** e quello di **caricamento**. La
+  critica pubblica al design generato dall'AI cita questi stati mancanti piu'
+  spesso di qualsiasi scelta cromatica, e finora nessun gate li controllava.
+- **Uniformita' geometrica**: raggio unico, padding unico e una sola ombra su
+  ogni superficie sono il segnale non tipografico piu' citato. Elenca i valori
+  distinti effettivamente usati nel file e confrontali con quello che fanno le
+  reference contate al gate 2a: la domanda non e' "e' coerente" ma "qualcuno
+  l'ha deciso".
 Strumenti: `get_metadata` (struttura/altezze) + `get_screenshot` FULL (visivo) +
 `contrast.js`. Un design non è "fatto" se anche un solo check fallisce.
 
