@@ -201,8 +201,17 @@ Run in order; for detail load the indicated `references/` file.
 - **2.5 ORIGINALITY ENGINE** (the heart): Thesis · 3 Territories · Anti-Copy
   Distance · Signature · Make It Less Expected · Trend Filter. Show
   thesis+territories+choice. → **load `references/originality-engine.md`**.
-- **3 → 3.9 PLAN + plan gates:** **re-read `<tmp>/<category>-constraints.md`
-  first** — the tally's verdicts are binding on tokens, type and page
+- **3 → 3.9 PLAN + plan gates:** **read the domain rules that apply, then
+  re-read `<tmp>/<category>-constraints.md`**. `data/rules/` records what a
+  domain *requires*, with a source for every number — `authentication.md`
+  covers password length, composition, masking and the login/signup error
+  wording. Read the matching file whenever the design contains that kind of
+  field. It exists because a password field shipped saying "at least 12
+  characters", a figure that sounds right and appears in no standard: OWASP
+  says 8 with MFA, 15 without. No gate here could have caught it, because
+  `contrast.js` measures colour and `datasetTally.js` counts references.
+  **A number you did not read from a source is a number you invented.**
+  Then, on the constraints file: — the tally's verdicts are binding on tokens, type and page
   architecture; a choice that contradicts one goes in its Deviations table with
   the user's agreement, or it doesn't ship. Then: tokens/fonts/colours **from
   measured data** (never a silent default, never a slop font), Evidence Quality,
