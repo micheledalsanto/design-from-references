@@ -469,3 +469,31 @@ one that deserves the check most. Before calling `create_new_file`, read the
 title back and ask whether any dash in it is standing in for a comma, a colon
 or a full stop — and prefer a comma: `Ledger, an accessible form validation
 kit`.**
+
+**2026-09-02 — Ledger. Four corrections on one password field, and the pattern
+they share.** Not a rejected design: four separate push-backs on the same
+component, each one right, and none of them catchable by any script here.
+
+- *"non mi sembra che uno possa mettere spazio nelle password"* — the technical
+  rule was right (NIST requires verifiers to accept the space character) and the
+  placement was wrong. It is an instruction to whoever builds the field, not
+  copy for whoever fills it in. No real product writes "spaces are allowed".
+- *"ma non chiedeva caratteri speciali etc?"* — the check confirmed the rule and
+  found my own error underneath it: I had cited Revision 3, superseded by
+  Revision 4, which raises composition rules from `SHOULD NOT` to `SHALL NOT`.
+  The rule survived, the source did not.
+- *"sei sicuro che la nist sia applicabile a tutto?"* — no, and this was the
+  real find. NIST binds US federal work; **PCI DSS 4.0 §8.3.6 mandates the very
+  composition rule NIST forbids** for anyone handling card payments. The
+  standards contradict each other, and most forms in the wild follow PCI, which
+  is exactly why the rule looked wrong to someone who looks at real forms.
+- The number that started it, "at least 12 characters", was invented outright.
+
+**Lesson: `nameCheck.js` and the hook catch tells of FORM — a dash, a slug, a
+marketing word. They cannot catch a judgement: whether a true rule belongs in
+the UI, which standard governs this client, or whether the revision you cited
+is current. For those, the check is asking "which regime is this product in?"
+before quoting any standard, and reading the primary source again when someone
+says the rule sounds implausible. Four times out of four here, that instinct
+was right and mine was wrong.** The rules now live in `data/rules/`, which
+opens with the regime table rather than with the numbers.
