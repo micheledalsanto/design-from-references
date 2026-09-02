@@ -4,8 +4,11 @@ Measured rules, not remembered ones. Every number here names its source, because
 this file exists after a design shipped "at least 12 characters" — a figure that
 sounds plausible and appears in no standard.
 
-Source: OWASP Authentication Cheat Sheet, read 2026-09-02.
-https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html
+Sources, both read 2026-09-02:
+- OWASP Authentication Cheat Sheet —
+  https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html
+- NIST SP 800-63B, Digital Identity Guidelines —
+  https://pages.nist.gov/800-63-3/sp800-63b.html
 
 ## Length
 
@@ -28,8 +31,18 @@ OWASP is explicit that forced character variety is **wrong**:
 
 > "Allow usage of all characters including unicode and whitespace."
 
-So: no "must contain a number and a symbol" checklist. Spaces are allowed and
-worth saying out loud, because it tells the user a passphrase is welcome.
+NIST SP 800-63B agrees and is more specific: verifiers SHOULD accept all
+printing ASCII characters **and the space character**, MAY collapse runs of
+consecutive spaces before verifying, and SHOULD accept Unicode.
+
+So: no "must contain a number and a symbol" checklist, and the field must
+accept spaces.
+
+**But accepting spaces is a build requirement, not copy.** An earlier draft of
+this file said the allowance was "worth saying out loud". It is not: no real
+product writes "spaces are allowed" under a password field, and a user who
+reads it wonders why it needed saying. State the length and stop. The space
+rule belongs in the handoff notes to whoever implements the field.
 
 ## What the field must and must not do
 
@@ -43,6 +56,10 @@ worth saying out loud, because it tells the user a passphrase is welcome.
 - **State the rule before the error fires**, in help text under the label. An
   error that repeats a rule the user was never shown is a design failure, not a
   user failure.
+- **Help text says the length and nothing else.** "At least 15 characters." is
+  the whole of it. Not the composition rules (there are none), not the space
+  allowance (an implementation detail), and not writing advice like "a short
+  sentence works well" — that is a UX article talking, not a product.
 - **Offer a strength meter** rather than a rules checklist (OWASP recommends
   zxcvbn-ts) and **block known-breached passwords** (Pwned Passwords).
 
