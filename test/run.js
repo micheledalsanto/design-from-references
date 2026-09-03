@@ -606,6 +606,97 @@ describe('constraintsCheck.js (the build is held against the count)', () => {
   });
 });
 
+// ---------------------------------------------------------------- originalityCheck.js
+
+describe('originalityCheck.js (gate 2.5 can no longer be skipped)', () => {
+  const gate = path.join(SCRIPTS, 'originalityCheck.js');
+  const doc = (name, obj) => {
+    const p = path.join(tmp, name);
+    fs.writeFileSync(p, JSON.stringify(obj));
+    return p;
+  };
+
+  // Plumbline, the showcase in the README, as gate 2.5 would record it.
+  const complete = {
+    thesis: 'This interface is built around the idea of a plumbline finding true vertical, expressed through a measured vertical reference line running the full layout, to make users understand that this firm\'s judgement is instrument-grade.',
+    territories: [
+      { name: 'Plumbline', concept: 'A measuring instrument as the organising grammar', breaks: 'Breaks the centred hero: the page hangs off a vertical axis left of centre' },
+      { name: 'Ledger', concept: 'The page as an accounting document with visible rules', breaks: 'Breaks the card grid: the portfolio is a data table with no cards' },
+      { name: 'Bedrock', concept: 'Geological strata as a metaphor for long holding periods', breaks: 'Breaks the white background for banded strata of warm stone' },
+    ],
+    chosen: 'Plumbline',
+    chosenBecause: 'It derives from the brand name without illustrating it, and gives every screen the same spine.',
+    antiCopyDistance: ['hero composition', 'section rhythm', 'typographic hierarchy'],
+    signature: { name: 'The plumbline', description: 'A vertical hairline with measurement ticks and a weight at its foot, threading the full page height' },
+    defaults: [
+      { default: 'gradient hero', replacedWith: 'Flat warm paper with the plumbline as the only vertical incident' },
+      { default: 'huge centred headline', replacedWith: 'Left-hung headline aligned to the plumbline axis' },
+      { default: 'floating dashboard mockup', replacedWith: 'A real 10-row editorial data table of holdings' },
+      { default: 'blue CTA' },
+      { default: 'alternating image/text sections' },
+    ],
+  };
+
+  it('passes a gate that was actually run', () => {
+    const r = exits(0, [gate, '--file', doc('complete.json', complete)]);
+    assert(/complete/.test(r.stdout), `expected a pass, got:\n${r.stdout}`);
+    // It must say plainly what it cannot judge, so a green line is not
+    // mistaken for "the design is good".
+    assert(/not that it was good/.test(r.stdout), 'the script must state its own limit');
+  });
+
+  it('blocks a gate that was skipped', () => {
+    const r = exits(1, [gate, '--file', doc('skipped.json', { thesis: 'A clean, modern investment site.' })]);
+    assert(/requirement\(s\) unmet/.test(r.stdout), 'expected a blocking verdict');
+  });
+
+  it('rejects the template placeholders left unfilled', () => {
+    const r = exits(1, [gate, '--file', doc('placeholder.json', {
+      ...complete,
+      thesis: 'This interface is built around the idea of [concept], expressed through [visual system], to make users feel [effect].',
+    })]);
+    assert(/thesis/.test(r.stdout), 'an unfilled template must not pass as a thesis');
+  });
+
+  it('requires the thesis to take the mandatory form', () => {
+    const r = exits(1, [gate, '--file', doc('freeform.json', { ...complete, thesis: 'A calm, precise site about long-term investing and trust.' })]);
+    assert(/mandatory form/.test(r.stdout), 'a free-form sentence is not the thesis format');
+  });
+
+  it('refuses a distance dimension that is not one of the seven', () => {
+    // Free text here would let "it just feels different" count as distance.
+    const r = exits(1, [gate, '--file', doc('vague.json', {
+      ...complete, antiCopyDistance: ['hero composition', 'section rhythm', 'it feels different'],
+    })]);
+    assert(/not a recognised dimension: it feels different/.test(r.stdout), `got:\n${r.stdout}`);
+  });
+
+  it('refuses the signatures gate 2.5 explicitly disqualifies', () => {
+    const r = exits(1, [gate, '--file', doc('generic.json', {
+      ...complete, signature: { name: 'Hero gradient', description: 'A soft gradient behind rounded cards on every surface' },
+    })]);
+    assert(/signature/.test(r.stdout), 'a gradient and rounded cards are not a signature');
+  });
+
+  it('requires three territories in standard, one in fast', () => {
+    const one = { ...complete, territories: [complete.territories[0]] };
+    exits(1, [gate, '--file', doc('one.json', one)]);
+    exits(0, [gate, '--file', doc('oneFast.json', one), '--mode', 'fast']);
+  });
+
+  it('counts only the defaults that were actually replaced', () => {
+    const r = exits(1, [gate, '--file', doc('unreplaced.json', {
+      ...complete, defaults: complete.defaults.map((d) => ({ default: d.default })),
+    })]);
+    assert(/0 of them replaced/.test(r.stdout), `got:\n${r.stdout}`);
+  });
+
+  it('bad usage exits 2', () => {
+    exits(2, [gate]);
+    exits(2, [gate, '--file', path.join(tmp, 'complete.json'), '--mode', 'turbo']);
+  });
+});
+
 // ---------------------------------------------------------------- repo integrity
 
 describe('repo integrity', () => {

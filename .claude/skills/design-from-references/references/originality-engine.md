@@ -3,6 +3,33 @@
 Before the full visual plan, complete ALL of these points. Show Thesis +
 Territories + your choice to the user before building.
 
+**Write the answers to `<tmp>/originality.json` and run the gate** — the shape
+below maps one-to-one onto the six points:
+
+```json
+{
+  "thesis": "This interface is built around the idea of …, expressed through …, to make users understand …",
+  "territories": [
+    { "name": "…", "concept": "…", "breaks": "what it BREAKS versus the references" }
+  ],
+  "chosen": "<one of the territory names>",
+  "chosenBecause": "…",
+  "antiCopyDistance": ["hero composition", "section rhythm", "typographic hierarchy"],
+  "signature": { "name": "…", "description": "…" },
+  "defaults": [{ "default": "gradient hero", "replacedWith": "…" }],
+  "ruleBreak": "the single controlled rule-break"
+}
+```
+
+```
+node <skill root>/scripts/originalityCheck.js --file <tmp>/originality.json --mode standard
+```
+
+`antiCopyDistance` accepts only the seven dimensions in §3 — free text there
+would let "it just feels different" count as distance. The gate checks that
+the work was **done**, never that it was **good**: that judgement is the
+user's, so showing them is still mandatory.
+
 1. **Creative Thesis** (1 sentence, mandatory format):
    *"This interface is built around the idea of [concept], expressed through
    [visual system], to make users feel/understand [effect]."*

@@ -222,6 +222,19 @@ narrative function.
 - **2.5 ORIGINALITY ENGINE** (the heart): Thesis · 3 Territories · Anti-Copy
   Distance · Signature · Make It Less Expected · Trend Filter. Show
   thesis+territories+choice. → **load `references/originality-engine.md`**.
+  **Record it, then run the gate:**
+  ```
+  node <skill root>/scripts/originalityCheck.js --file <tmp>/originality.json --mode <fast|standard|studio>
+  ```
+  Exit 1 means a requirement is unmet: no thesis in the mandatory form, fewer
+  than 3 territories (1 in Fast), a territory that doesn't say what it
+  *breaks*, fewer than 3 anti-copy dimensions named from the fixed seven, a
+  disqualified signature, or fewer than 3 of the 5 defaults replaced.
+  **The script cannot tell you whether the thesis is any good** — that is still
+  yours and the user's judgement, which is why you still show them. What it
+  can do is stop the heart of this skill from being skipped, half-filled or
+  filled with placeholders, which every other major gate already has a script
+  to prevent and this one did not.
 - **3 → 3.9 PLAN + plan gates:** **read the domain rules that apply, then
   re-read `<tmp>/<category>-constraints.md`**. `data/rules/` records what a
   domain *requires*, with a source for every number — `authentication.md`
