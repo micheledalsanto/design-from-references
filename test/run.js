@@ -254,6 +254,66 @@ describe('datasetTally.js', () => {
   });
 });
 
+// ---------------------------------------------------------------- datasetRoot.js
+
+describe('datasetRoot.js (what counts as a countable category)', () => {
+  // A root with one of each kind of directory.
+  const root = path.join(tmp, 'roots');
+  const mk = (name, files) => {
+    const dir = path.join(root, name);
+    fs.mkdirSync(dir, { recursive: true });
+    for (const [f, body] of Object.entries(files)) fs.writeFileSync(path.join(dir, f), body);
+  };
+  mk('goodCategory', { 'dataset.json': JSON.stringify({ sites: [{ slug: 'a' }] }) });
+  mk('lostItsText', { 'desktop.png': 'x', 'mobile.png': 'x' }); // the real failure
+  mk('emptyOne', {});
+  mk('unparseable', { 'dataset.json': '{ not json' });
+  mk('noSites', { 'dataset.json': JSON.stringify({ sites: [] }) });
+
+  const { surveyRoot } = require(path.join(ROOT, SCRIPTS, 'datasetRoot.js'));
+
+  it('counts only directories with a dataset.json that parses and has sites', () => {
+    const { usable } = surveyRoot(root);
+    assert(
+      usable.length === 1 && usable[0] === 'goodCategory',
+      `expected only goodCategory to be usable, got ${JSON.stringify(usable)}`
+    );
+  });
+
+  it('names a category that kept its screenshots but lost its measurements', () => {
+    // This is the case that stayed invisible: ten categories lost their
+    // dataset.json and every design.md to a history rewrite while the
+    // gitignored PNGs survived, and the gate listed all of them as available.
+    const { broken } = surveyRoot(root);
+    const lost = broken.find((b) => b.name === 'lostItsText');
+    assert(lost, 'a directory with screenshots but no dataset.json must be reported as broken');
+    assert(/measurements lost/.test(lost.why), `expected the loss to be named, got: ${lost.why}`);
+    const empty = broken.find((b) => b.name === 'emptyOne');
+    assert(/empty/.test(empty.why), `an empty dir is not a data loss, got: ${empty.why}`);
+  });
+
+  it('reports the other ways a dataset.json can be unusable', () => {
+    const { broken } = surveyRoot(root);
+    assert(/does not parse/.test(broken.find((b) => b.name === 'unparseable').why), 'bad JSON');
+    assert(/no sites/.test(broken.find((b) => b.name === 'noSites').why), 'empty site list');
+  });
+
+  it('both counting scripts report the loss instead of listing it as available', () => {
+    for (const script of [tally, notesScan]) {
+      const r = node([script, 'lostItsText', '--dataset-root', root]);
+      assert(r.code === 2, `${script} should exit 2, got ${r.code}`);
+      assert(
+        /measurements lost/.test(r.stderr),
+        `${script} must name the loss, got: ${r.stderr.trim()}`
+      );
+      assert(
+        !/countable categories \(\d+\):[^\n]*lostItsText/.test(r.stderr),
+        `${script} still lists the broken category as countable`
+      );
+    }
+  });
+});
+
 // ---------------------------------------------------------------- designNotesScan.js
 
 describe('designNotesScan.js', () => {

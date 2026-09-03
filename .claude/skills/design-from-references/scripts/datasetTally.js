@@ -31,15 +31,7 @@ function parseArgs(argv) {
   return a;
 }
 
-function findDatasetRoot(explicit) {
-  if (explicit) return explicit;
-  const candidates = [
-    path.resolve(process.cwd(), 'data/datasets'),
-    path.resolve(__dirname, '../../../../data/datasets'), // project checkout
-    path.resolve(__dirname, '../../../data/datasets'),    // plugin install
-  ];
-  return candidates.find((c) => fs.existsSync(c)) || candidates[0];
-}
+const { findDatasetRoot, reportMissing } = require('./datasetRoot.js');
 
 // --- colour helpers ---------------------------------------------------------
 function hexToRgb(hex) {
@@ -243,8 +235,7 @@ function main() {
   const root = findDatasetRoot(args.root);
   const file = path.join(root, args.category, 'dataset.json');
   if (!fs.existsSync(file)) {
-    console.error(`dataset not found: ${file}`);
-    console.error(`available: ${fs.existsSync(root) ? fs.readdirSync(root).join(', ') : '(no dataset root)'}`);
+    reportMissing(root, args.category);
     process.exit(2);
   }
 

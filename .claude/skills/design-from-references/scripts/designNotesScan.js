@@ -40,15 +40,7 @@ function parseArgs(argv) {
   return a;
 }
 
-function findDatasetRoot(explicit) {
-  if (explicit) return explicit;
-  const candidates = [
-    path.resolve(process.cwd(), 'data/datasets'),
-    path.resolve(__dirname, '../../../../data/datasets'),
-    path.resolve(__dirname, '../../../data/datasets'),
-  ];
-  return candidates.find((c) => fs.existsSync(c)) || candidates[0];
-}
+const { findDatasetRoot, reportMissing } = require('./datasetRoot.js');
 
 // Split a design.md into its "## " sections, lowercased keys.
 function sections(md) {
@@ -337,7 +329,7 @@ function main() {
   const catDir = path.join(root, args.category);
   const file = path.join(catDir, 'dataset.json');
   if (!fs.existsSync(file)) {
-    console.error(`dataset not found: ${file}`);
+    reportMissing(root, args.category);
     process.exit(2);
   }
 
