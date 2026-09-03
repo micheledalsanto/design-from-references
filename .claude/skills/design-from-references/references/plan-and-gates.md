@@ -25,16 +25,20 @@ No sourceless line.
      flags the offenders (Inter, Poppins, DM Sans, Manrope, Figtree, Outfit,
      Sora, Space Grotesk, Geist, Satoshi, Playfair, Cormorant, Spectral, IBM
      Plex, Space/JetBrains Mono). These are **"needs a stated reason", not
-     "never"**: 15 of the 70 references do use one (Inter on 10). The reason
-     they lose by default is the other number — **60 of 70 carry a proprietary
-     display face**. So pick from that *licensed* tier (Fruitiger, Financier
-     Display, Canela, Signifier, Founders Grotesk, Goldenbook, Scto Grotesk…)
-     or the nearest Figma-available equivalents, and say so.
+     "never"** — a minority of real references do use one. They lose by default
+     because the majority carry a **proprietary display face**, and that tier is
+     where a category's identity lives. So pick from that *licensed* tier
+     (Fruitiger, Financier Display, Canela, Signifier, Founders Grotesk,
+     Goldenbook, Scto Grotesk…) or the nearest Figma-available equivalents, and
+     say so.
   Also: **pair two families by default** rather than running headings, body and
   data off one superfamily — that flat neutrality reads as generated. It is a
-  default, not a law: measured across the datasets it is **45 two-family vs 25
-  single**, and single-family *wins* in corporate-website (6-4). Let the tally's
-  TYPE PAIRING row decide for your cluster.
+  default, not a law: across the corpus the split is close to even, and
+  single-family *wins* in some categories. Let the tally's TYPE PAIRING row
+  decide for your cluster — that is the only count that governs this design.
+  **For the corpus-wide numbers, read the generated gate 2c table in `SKILL.md`
+  and regenerate it with `houseStyleTally.js`. Do not copy counts into prose:
+  the ones that used to sit in this paragraph were two datasets out of date.**
   **Propose 3 alternatives verified as available in Figma**, with the voice
   of each, and get agreement before propagating type through the system.
   → detail and the reasoning: `references/antiSlop.md`.

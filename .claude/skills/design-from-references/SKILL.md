@@ -20,6 +20,7 @@ when you reach that phase (don't read them all upfront):
 | When | Load |
 | --- | --- |
 | Before fixing type, palette, naming or direction (2a → 3) | `references/antiSlop.md` |
+| When a rule looks arbitrary, or after a rejected run | `references/runLog.md` |
 | Originality Engine (gate 2.5) | `references/originality-engine.md` |
 | Plan + plan gates (3 → 3.9) | `references/plan-and-gates.md` |
 | Build, render verification, score, output (4 → 7.1) | `references/build-verify-output.md` |
@@ -334,10 +335,10 @@ After each real run note: gates that were too slow · redundant output ·
 insufficient dataset · still-generic spots. Use them to refine the skill, not
 the current output.
 
-**Write them down or they evaporate.** Append to `references/antiSlop.md`
-(section *Run log*) — a repo file, so the lesson survives the session and ships
-with the plugin. One entry per rejected or corrected run: what was chosen, what
-the user said, what the count actually was, which rule changed.
+**Write them down or they evaporate.** Append to `references/runLog.md` — a
+repo file, so the lesson survives the session and ships with the plugin. One
+entry per rejected or corrected run: what was chosen, what the user said, what
+the count actually was, which rule changed.
 
 **A rule in this skill is only as good as its evidence.** If a run contradicts
 a rule written here, the rule loses — fix it and record the measurement.

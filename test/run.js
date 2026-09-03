@@ -697,6 +697,49 @@ describe('originalityCheck.js (gate 2.5 can no longer be skipped)', () => {
   });
 });
 
+// ---------------------------------------------------------------- the browser-side audits
+
+describe('webartist browser audits (never executed by anything else)', () => {
+  // contrast-audit.js and layout-audit.js run in the PAGE, pasted into devtools
+  // or handed to page.evaluate. Nothing in this repo ever loads them, so a
+  // syntax error or a drifted formula would sit there indefinitely and only
+  // surface mid-QA on a real design.
+  const dir = path.join(ROOT, '.claude', 'skills', 'webartist', 'scripts');
+  const audits = ['contrast-audit.js', 'layout-audit.js'];
+
+  for (const name of audits) {
+    it(`${name} is syntactically valid`, () => {
+      const r = node(['--check', path.join(dir, name)]);
+      assert(r.code === 0, `${name} does not parse:\n${r.stderr}`);
+    });
+  }
+
+  it('contrast-audit agrees with contrast.js on the WCAG ratio', () => {
+    // It cannot require() contrast.js -- it runs in a browser -- so the
+    // luminance formula is duplicated by necessity. What must not happen is the
+    // two drifting apart on the one number every gate in this repo depends on.
+    const src = fs.readFileSync(path.join(dir, 'contrast-audit.js'), 'utf8');
+    const grab = (name) => {
+      // Each is a one-liner; matching to end-of-line rather than to the first
+      // ";" is what makes `lin` (which has semicolons inside its braces) work.
+      const m = new RegExp(`^\\s*const ${name} = .*$`, 'm').exec(src);
+      assert(m, `could not find ${name} in contrast-audit.js — has it been rewritten?`);
+      return m[0].trim();
+    };
+    const browserRatio = new Function(
+      `${grab('lin')} ${grab('lum')} ${grab('ratio')} return ratio;`
+    )();
+
+    const { parseHex, ratio: nodeRatio } = require(path.join(ROOT, contrast));
+    const rgb = (hex) => { const [r, g, b] = parseHex(hex); return { r, g, b }; };
+    for (const [fg, bg] of [['#ffffff', '#000000'], ['#777777', '#777777'], ['#6b78ff', '#0b0b0b'], ['#1f6b48', '#f4f2ef']]) {
+      const a = browserRatio(rgb(fg), rgb(bg));
+      const b = nodeRatio(parseHex(fg), parseHex(bg));
+      assert(Math.abs(a - b) < 0.01, `${fg}/${bg}: browser says ${a}, node says ${b}`);
+    }
+  });
+});
+
 // ---------------------------------------------------------------- repo integrity
 
 describe('repo integrity', () => {
@@ -740,6 +783,17 @@ describe('repo integrity', () => {
     assert(declared.length > 0, 'plugin.json declares nothing');
     const missing = declared.filter((p) => !fs.existsSync(path.join(ROOT, p)));
     assert(!missing.length, `plugin.json points at paths that do not exist:\n  ${missing.join('\n  ')}`);
+  });
+
+  it('the Italian alias delegates instead of restating the procedure', () => {
+    // The two used to describe the gate sequence separately and had already
+    // drifted: /crea-design was missing gates the English one had gained.
+    const alias = fs.readFileSync(path.join(ROOT, '.claude', 'commands', 'crea-design.md'), 'utf8');
+    assert(/design\.md/.test(alias), 'the alias must point at the one definition');
+    assert(
+      !/datasetTally\.js/.test(alias),
+      'the alias restates the procedure again — it will drift from design.md'
+    );
   });
 
   it('every references/ and scripts/ path the skills cite exists', () => {
