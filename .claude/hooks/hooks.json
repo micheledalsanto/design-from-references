@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "mcp__.*figma.*__create_new_file",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/nameGate.js\"",
+            "timeout": 15,
+            "statusMessage": "Checking the file name for AI tells"
+          }
+        ]
+      }
+    ]
+  }
+}

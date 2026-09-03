@@ -25,11 +25,24 @@ process.stdin.on('end', () => {
 
   if (!name) process.exit(0);             // nothing to check
 
+  // Resolve nameCheck.js relative to THIS file first. The hook and the checker
+  // ship together inside .claude/, so __dirname/../skills/... holds both in a
+  // cloned repo and in a plugin install. CLAUDE_PROJECT_DIR does not: for a
+  // plugin user it points at their own project, which has no skills/ tree, so
+  // the gate used to fail open and silently never fire for exactly the people
+  // who installed it on purpose.
+  const candidates = [
+    path.join(__dirname, '..', 'skills', 'design-from-references', 'scripts', 'nameCheck.js'),
+    ...[process.env.CLAUDE_PLUGIN_ROOT, process.env.CLAUDE_PROJECT_DIR, process.cwd()]
+      .filter(Boolean)
+      .map((root) => path.join(root, '.claude/skills/design-from-references/scripts/nameCheck.js')),
+  ];
+
   let check;
-  try {
-    const root = process.env.CLAUDE_PROJECT_DIR || process.cwd();
-    check = require(path.join(root, '.claude/skills/design-from-references/scripts/nameCheck.js')).check;
-  } catch { process.exit(0); }            // checker missing: fail open, never wedge the tool
+  for (const candidate of candidates) {
+    try { check = require(candidate).check; break; } catch { /* try the next one */ }
+  }
+  if (!check) process.exit(0);            // checker missing: fail open, never wedge the tool
 
   const problems = check(name);
   if (!problems.length) process.exit(0);

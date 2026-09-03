@@ -16,6 +16,7 @@
     "./.claude/skills/webartist"
   ],
   "commands": ["./.claude/commands/"],
+  "hooks": "./.claude/hooks/hooks.json",
   "agents": [
     "./.claude/agents/dataset-builder.md",
     "./.claude/agents/design-content.md",
