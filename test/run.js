@@ -375,6 +375,71 @@ describe('designNotesScan.js', () => {
   });
 });
 
+// ---------------------------------------------------------------- design.md front matter
+
+describe('designNotesScan.js front matter (stated beats narrated)', () => {
+  const root = path.join(tmp, 'fmRoot');
+  const note = (slug, fm, body) => {
+    const dir = path.join(root, 'demoCat', slug);
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, 'design.md'), `---\n${fm}\n---\n# ${slug}\n## Layout\n${body}\n`);
+  };
+  fs.mkdirSync(path.join(root, 'demoCat'), { recursive: true });
+  fs.writeFileSync(path.join(root, 'demoCat', 'dataset.json'),
+    JSON.stringify({ category: 'demoCat', sites: [{ slug: 'siteA' }, { slug: 'siteB' }] }));
+  note('siteA', 'cornerRadiusPx: 2\nsurface: flat\nradiusUniformity: single\nheadlinePx: 88\nphotography: colour\nitalicDisplay: no', 'A restrained editorial grid.');
+  note('siteB', 'cornerRadiusPx: 24\nsurface: shadowed\nradiusUniformity: varied\nheadlinePx: 40\nphotography: desaturated\nitalicDisplay: yes', 'Card-heavy.');
+
+  const scan = () => JSON.parse(execFileSync(process.execPath,
+    [notesScan, 'demoCat', '--dataset-root', root, '--json'], { cwd: ROOT, encoding: 'utf8' }));
+  const dim = (s, k) => s.dimensions.find((d) => d.key === k);
+
+  it('answers the geometry rows the prose never could', () => {
+    // These come back unknown for every note in the real corpus: design.md is
+    // written for a human and rarely states a radius. Section 7a calls
+    // uniformity a tell this repo never counted -- never stated, never counted.
+    const s = scan();
+    assert(dim(s, 'CORNER RADIUS').unknown === 0, 'corner radius should be fully stated');
+    assert(dim(s, 'SURFACE TREATMENT').unknown === 0, 'surface should be fully stated');
+    assert(dim(s, 'RADIUS UNIFORMITY').unknown === 0, 'radius uniformity should be fully stated');
+  });
+
+  it('maps numbers to buckets and short values to full bucket names', () => {
+    const s = scan();
+    const radius = dim(s, 'CORNER RADIUS').counts;
+    assert(radius['sharp (0-4px)'] === 1 && radius['round (>16px)'] === 1, `2px and 24px should split: ${JSON.stringify(radius)}`);
+    const head = dim(s, 'HEADLINE SIZE').counts;
+    assert(head['>56px'] === 1 && head['<=56px'] === 1, `88px and 40px should split: ${JSON.stringify(head)}`);
+    const photo = dim(s, 'PHOTOGRAPHY').counts;
+    assert(photo['desaturated/B&W'] === 1, `"desaturated" should reach the full bucket: ${JSON.stringify(photo)}`);
+  });
+
+  it('records that the value was stated, not matched', () => {
+    assert(dim(scan(), 'SURFACE TREATMENT').stated === 2, 'both notes stated their surface');
+  });
+
+  it('never coerces an unrecognised value into the nearest bucket', () => {
+    const dir = path.join(root, 'demoCat', 'siteA', 'design.md');
+    const original = fs.readFileSync(dir, 'utf8');
+    fs.writeFileSync(dir, original.replace('surface: flat', 'surface: glassmorphic'));
+    const r = node([notesScan, 'demoCat', '--dataset-root', root]);
+    fs.writeFileSync(dir, original);
+    assert(/not recognised/.test(r.stderr), `the bad value must be named, got: ${r.stderr.trim()}`);
+    assert(/glassmorphic/.test(r.stderr), 'the offending value must appear in the warning');
+    assert(!/flat/.test(r.stdout.split('SURFACE TREATMENT')[1] || ''), 'it must not fall into a bucket anyway');
+  });
+
+  it('leaves prose-only notes counting exactly as before', () => {
+    // The whole real corpus has no front matter yet. If adding it changed the
+    // fallback, every pinned number in this suite would be measuring something
+    // new -- so the pins above are also this test's assertion.
+    const s = JSON.parse(execFileSync(process.execPath,
+      [notesScan, 'longevityClinic', '--dataset-root', FIXTURES, '--json'], { cwd: ROOT, encoding: 'utf8' }));
+    assert(dim(s, 'CORNER RADIUS').unknown === 10, 'prose fallback must still report unknown');
+    assert(dim(s, 'HEADLINE SIZE').counts['>56px'] === 7, 'the 7-above-56px pin must survive');
+  });
+});
+
 // ---------------------------------------------------------------- houseStyleTally.js
 
 describe('houseStyleTally.js (gate 2c is generated, not typed)', () => {

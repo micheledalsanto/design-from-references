@@ -48,8 +48,35 @@ runtime. Aim for **variety**: include different directions, even sites that
    - Note down: the **REAL font-families** (display/body), the **real colours**
      (bg + palette by area + accent), structure/sections, mood, **what makes it
      distinctive / why it works**, and what NOT to take.
-   - **Write `design.md`** in the site's folder (`<category>/<site>/design.md`):
-     a *usable* analysis (not vibes) with — **Type system** (real
+   - **Write `design.md`** in the site's folder (`<category>/<site>/design.md`),
+     opening with a **front matter block of stated facts**. `designNotesScan.js`
+     reads this block before it reads your prose. Everything you leave out it
+     has to guess at with a regex, and it will honestly report `unknown` rather
+     than guess — which is why the geometry rows were unknown for every site in
+     the corpus until this block existed. **Measure each value; omit any line
+     you did not measure. An omitted line is fine, an invented one is not.**
+     ```markdown
+     ---
+     heroComposition: photo-led        # photo-led | type-led | product-led
+     photography: colour               # colour | desaturated | none
+     headlinePx: 88                    # measured H1/display size, px
+     textAlignment: left               # left | centred
+     italicDisplay: no                 # italics in a headline/tagline? yes | no
+     productUi: no                     # yes | no
+     bigStats: yes                     # yes | no
+     pressLogos: yes                   # yes | no
+     comparisonTable: no               # yes | no
+     customerFaces: yes                # yes | no
+     cornerRadiusPx: 4                 # dominant radius, px
+     surface: flat                     # flat | bordered | shadowed
+     radiusUniformity: single          # single (one radius everywhere) | varied
+     ---
+     ```
+     `radiusUniformity` matters more than it looks: uniform geometry — one
+     radius, one padding, one shadow on every surface — is named in the public
+     criticism of AI design as a tell, and §7a of `antiSlop.md` records that
+     this repo had no way to count it.
+     Then the prose, a *usable* analysis (not vibes) with — **Type system** (real
      display/body/mono fonts + observed scale/weight/tracking), **Color system**
      (real hexes with a ROLE bg/surface/text/accent, where used), **Layout &
      grid** (columns, gutter, max-width, vertical rhythm), **Sections** (full

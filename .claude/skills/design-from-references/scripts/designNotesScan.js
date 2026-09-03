@@ -107,9 +107,69 @@ function probe(text, positive, negative) {
 // --- the dimensions --------------------------------------------------------
 // Each returns { verdict, quote, value? }. Order matches the by-eye rows the
 // tally prints, so the two scripts line up.
+/**
+ * Front matter: the measured half of a design.md, stated rather than narrated.
+ *
+ * Everything below this comment reads free prose with regexes, which is why
+ * the geometry rows come back `unknown` for almost every note: design.md is
+ * written for a human, and a regex can only find the phrasings someone
+ * happened to use. Section 7a of antiSlop.md calls uniformity a tell this repo
+ * never counted -- it was never counted because it was never stated.
+ *
+ * So dataset-builder now states it. A `---` block at the top of design.md
+ * carries the facts; the prose keeps the narrative and the "how to apply"
+ * notes. The scan reads the block first and falls back to the regexes, so
+ * older notes keep working exactly as before.
+ *
+ * A value that is not a recognised bucket is reported as unknown and warned
+ * about. It is never coerced into the nearest option: inventing the missing
+ * value is the one thing this scan exists not to do.
+ */
+function frontMatter(md) {
+  const m = /^---\r?\n([\s\S]*?)\r?\n---/.exec(md);
+  if (!m) return {};
+  const fm = {};
+  for (const line of m[1].split('\n')) {
+    const kv = /^\s*([A-Za-z][A-Za-z0-9_]*)\s*:\s*(.+?)\s*$/.exec(line);
+    if (!kv) continue;
+    fm[kv[1]] = kv[2].replace(/^["']|["']$/g, '');
+  }
+  return fm;
+}
+
+/** Map a stated front-matter value onto a dimension's buckets. */
+function fromFrontMatter(dim, raw) {
+  const v = String(raw).trim().toLowerCase();
+  const quote = `stated in front matter: ${dim.fm}: ${raw}`;
+
+  if (dim.fmNumber) {
+    const px = parseFloat(v);
+    if (!Number.isFinite(px)) return null;
+    const value = dim.fmNumber(px);
+    return value ? { verdict: 'hit', value, px, quote } : null;
+  }
+
+  const yesNo = dim.buckets.length === 2 && dim.buckets[0] === 'yes';
+  if (yesNo) {
+    if (/^(yes|true)$/.test(v)) return { verdict: 'hit', value: 'yes', quote };
+    if (/^(no|false)$/.test(v)) return { verdict: 'none', value: 'no', quote };
+    return null;
+  }
+
+  // Match a bucket by its leading word, so "flat" finds "flat/borderless"
+  // and "desaturated" finds "desaturated/B&W".
+  const hit = dim.buckets.find((b) => {
+    const bl = b.toLowerCase();
+    return bl === v || bl.split(/[\/ ]/)[0] === v || bl.startsWith(v);
+  });
+  if (!hit) return null;
+  return { verdict: hit === 'none' ? 'none' : 'hit', value: hit, quote };
+}
+
 const DIMENSIONS = [
   {
     key: 'HERO COMPOSITION',
+    fm: 'heroComposition',
     buckets: ['photo-led', 'type-led', 'product-led'],
     run(secs) {
       const t = scope(secs, [...SEC.layout, ...SEC.sections]) || secs._all;
@@ -125,6 +185,7 @@ const DIMENSIONS = [
   },
   {
     key: 'PHOTOGRAPHY',
+    fm: 'photography',
     buckets: ['colour', 'desaturated/B&W', 'none'],
     run(secs) {
       // Scoped to colour/layout: "monochrome" in the components section
@@ -145,6 +206,8 @@ const DIMENSIONS = [
   },
   {
     key: 'HEADLINE SIZE',
+    fm: 'headlinePx',
+    fmNumber: (px) => (px > 56 ? '>56px' : '<=56px'),
     buckets: ['>56px', '<=56px'],
     run(secs) {
       const t = scope(secs, SEC.type);
@@ -168,6 +231,7 @@ const DIMENSIONS = [
   },
   {
     key: 'TEXT ALIGNMENT',
+    fm: 'textAlignment',
     buckets: ['left', 'centred'],
     run(secs) {
       const t = scope(secs, [...SEC.layout, ...SEC.type]);
@@ -183,6 +247,7 @@ const DIMENSIONS = [
   },
   {
     key: 'ITALIC DISPLAY',
+    fm: 'italicDisplay',
     buckets: ['yes', 'no'],
     run(secs) {
       // Was scoped to the type/components sections and required the phrase
@@ -210,6 +275,7 @@ const DIMENSIONS = [
   },
   {
     key: 'SHOWS PRODUCT UI',
+    fm: 'productUi',
     buckets: ['yes', 'no'],
     run(secs) {
       const t = scope(secs, [...SEC.sections, ...SEC.components, ...SEC.works]) || secs._all;
@@ -220,6 +286,7 @@ const DIMENSIONS = [
   },
   {
     key: 'BIG NUMERIC STATS',
+    fm: 'bigStats',
     buckets: ['yes', 'no'],
     run(secs) {
       const t = scope(secs, [...SEC.sections, ...SEC.components]) || secs._all;
@@ -228,6 +295,7 @@ const DIMENSIONS = [
   },
   {
     key: 'PRESS / CLIENT LOGOS',
+    fm: 'pressLogos',
     buckets: ['yes', 'no'],
     run(secs) {
       const t = scope(secs, [...SEC.sections, ...SEC.components]) || secs._all;
@@ -236,6 +304,7 @@ const DIMENSIONS = [
   },
   {
     key: 'COMPARISON TABLE',
+    fm: 'comparisonTable',
     buckets: ['yes', 'no'],
     run(secs) {
       const t = scope(secs, [...SEC.sections, ...SEC.components]) || secs._all;
@@ -251,6 +320,8 @@ const DIMENSIONS = [
   // notes are silent, which for radius is roughly two notes in three.
   {
     key: 'CORNER RADIUS',
+    fm: 'cornerRadiusPx',
+    fmNumber: (px) => (px <= 4 ? 'sharp (0-4px)' : px <= 16 ? 'soft (5-16px)' : 'round (>16px)'),
     buckets: ['sharp (0-4px)', 'soft (5-16px)', 'round (>16px)', 'pill'],
     run(secs) {
       // Radius is stated wherever the note happens to describe a button or
@@ -276,6 +347,7 @@ const DIMENSIONS = [
   },
   {
     key: 'SURFACE TREATMENT',
+    fm: 'surface',
     buckets: ['flat/borderless', 'bordered', 'shadowed'],
     run(secs) {
       const t = exceptAvoid(secs);
@@ -298,6 +370,7 @@ const DIMENSIONS = [
   },
   {
     key: 'RADIUS UNIFORMITY',
+    fm: 'radiusUniformity',
     buckets: ['varied', 'single'],
     run(secs) {
       // The actual tell is not the value but whether ANYONE decided: a system
@@ -329,6 +402,7 @@ const DIMENSIONS = [
   },
   {
     key: 'CUSTOMER FACES',
+    fm: 'customerFaces',
     buckets: ['yes', 'no'],
     run(secs) {
       const t = scope(secs, [...SEC.sections, ...SEC.components, ...SEC.color]) || secs._all;
@@ -376,15 +450,31 @@ function main() {
     const rel = s.design || `${s.slug}/design.md`;
     const p = path.join(catDir, rel);
     if (!fs.existsSync(p)) { missing.push(s.slug || rel); continue; }
-    notes.push({ slug: s.slug || rel, secs: sections(fs.readFileSync(p, 'utf8')) });
+    const md = fs.readFileSync(p, 'utf8');
+    notes.push({ slug: s.slug || rel, secs: sections(md), fm: frontMatter(md) });
   }
   if (!notes.length) {
     console.error(`no design.md found under ${catDir} — nothing to scan`);
     process.exit(2);
   }
 
+  // A stated fact beats a matched phrase. Falls through to the prose regexes
+  // when the note has no front matter, or none for this dimension.
+  const rejected = [];
+  const resolve = (d, nt) => {
+    if (d.fm && nt.fm && nt.fm[d.fm] !== undefined) {
+      const stated = fromFrontMatter(d, nt.fm[d.fm]);
+      if (stated) return { ...stated, source: 'front matter' };
+      // Never coerce an unrecognised value into the nearest bucket. Say it out
+      // loud and fall back, so a typo in a note surfaces instead of becoming a
+      // silently wrong count.
+      rejected.push(`${nt.slug}: ${d.fm}: ${nt.fm[d.fm]} is not one of ${d.buckets.join(' / ')}`);
+    }
+    return { ...d.run(nt.secs), source: 'prose' };
+  };
+
   const results = DIMENSIONS.map((d) => {
-    const per = notes.map((nt) => ({ slug: nt.slug, ...d.run(nt.secs) }));
+    const per = notes.map((nt) => ({ slug: nt.slug, ...resolve(d, nt) }));
     const counts = {};
     let unknown = 0;
     for (const r of per) {
@@ -399,8 +489,15 @@ function main() {
     else if (known < Math.ceil(per.length / 2)) verdict = `WEAK (only ${known}/${per.length} stated) — confirm on the screenshots`;
     else if (ranked.length > 1 && ranked[0][1] === ranked[1][1]) verdict = 'SPLIT — decide explicitly';
     else verdict = `${ranked[0][0].toUpperCase()} (${ranked[0][1]}/${known} stated)`;
-    return { key: d.key, buckets: d.buckets, counts, unknown, known, verdict, per };
+    const stated = per.filter((r) => r.source === 'front matter' && r.verdict !== 'unknown').length;
+    return { key: d.key, buckets: d.buckets, counts, unknown, known, stated, verdict, per };
   });
+
+  if (rejected.length) {
+    console.error('front matter values not recognised (falling back to the prose for these):');
+    for (const r of rejected) console.error(`  ${r}`);
+    console.error('');
+  }
 
   if (args.json) {
     console.log(JSON.stringify({ category: data.category || args.category, cluster: clusterLabel, sites: notes.length, missing, dimensions: results }, null, 2));
