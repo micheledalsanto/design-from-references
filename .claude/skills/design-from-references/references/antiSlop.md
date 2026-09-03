@@ -145,6 +145,48 @@ Also good, and the other half of the references: real words in another language
 (**Lanserhof**, **Azulik**), plain verbs (**Tally**, **Plum**, **Wise**).
 Approved for this user: **Otava** (Finnish for the Big Dipper).
 
+### How the good ones were actually found
+
+Every name this user kept came from the same move, and the skill had never
+written it down — which is why it kept proposing Meridian instead.
+
+**Go into the product's own world and name a real thing in it.** Not a metaphor
+for a quality: an object, a tool, a material, a unit, a process, a trade word,
+or the place it comes from.
+
+| Name | Is literally | For |
+| --- | --- | --- |
+| **Tirage** | the print run, in French printing | art e-commerce |
+| **Firn** | granular snow, in glaciology | an alpine hotel |
+| **Kvitto** | a receipt, in Swedish | a pricing table |
+| **Plumbline** | the instrument that finds true vertical | an investment firm |
+| **Fettle** | condition, in English dialect — *in fine fettle* | e-bike servicing |
+| **Otava** | the Big Dipper, in Finnish | a longevity clinic |
+
+The register works because the word already has a job. It carries a referent
+that predates the brand, so it cannot read as generated — and it gives the
+design a signature to derive from, which is where Plumbline's vertical rule
+came from.
+
+**Procedure when you need a name:** list 10–15 real terms from the domain — what
+the practitioners call their tools, their steps, their measurements, their
+materials. Then pick the one that is *concrete, short to say, and not the
+category itself*. If the list is all abstractions, you have not gone into the
+domain yet.
+
+> **The escape became its own formula.** Six of the nine names shipped from this
+> repo — Otava, Tirage, Firn, Fettle, Kvitto, Lumo — are a single foreign word
+> of four to six letters. That is far better than Meridian and it is still a
+> pattern, and a pattern is what "AI-made" means. `nameCheck.js --against
+> <catalogue>` measures it. **Vary the shape too:** two words, a plain English
+> compound, a possessive, a place. *Second Press*, *Cold Storage Works* and
+> *The Ninth Hour* are names; so is *Fettle*. Only one of those shapes has been
+> used nine times here.
+>
+> *Threshold* is on the abstract-register list in `nameCheck.js`, and it is one
+> of this repo's own. That is deliberate — it is the weakest of the nine, and
+> excluding it to protect a past decision is how a checklist starts lying.
+
 Avoid: abstract quality-nouns, Latin-sounding coinages, and anything that reads
 as the product category with the letters rearranged. **Test:** would the name
 fit three competitors in the same sector? Then it is not a name.

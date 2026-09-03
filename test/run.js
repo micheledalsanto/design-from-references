@@ -152,6 +152,58 @@ describe('nameCheck.js', () => {
   it('no arguments exits 2', () => {
     exits(2, [nameCheck]);
   });
+
+  // --- the judgement layer: register and house formula ---------------------
+
+  it('flags the abstract quality-noun register the form rules cannot see', () => {
+    // "Meridian" has no dash, no slug and no marketing verb, and was rejected
+    // on sight along with Baseline, Cadence and Ledger.
+    const r = node([nameCheck, 'Meridian']);
+    assert(/abstract-register/.test(r.stdout), `expected a register warning:\n${r.stdout}`);
+  });
+
+  it('does not treat describing the product as the failure', () => {
+    // Poster Club, Farm to People, Moneybox and Function Health all describe
+    // and all work: the target is the abstract register, not description.
+    for (const name of ['Poster Club', 'Farm to People', 'Moneybox', 'Function Health']) {
+      const r = node([nameCheck, name]);
+      assert(r.code === 0 && !/abstract-register/.test(r.stdout), `${name} should pass clean:\n${r.stdout}`);
+    }
+  });
+
+  it('warns without blocking, and only --strict fails', () => {
+    // The hook must never block on a judgement -- a wedged create_new_file is
+    // worse than a name someone has to argue about.
+    assert(node([nameCheck, 'Meridian']).code === 0, 'a judgement must not block by default');
+    assert(node([nameCheck, 'Meridian', '--strict']).code === 1, '--strict must fail');
+  });
+
+  it('the PreToolUse hook still only sees tells of form', () => {
+    const gate = (name) => node([nameGate], {
+      input: JSON.stringify({ tool_input: { fileName: name } }),
+      env: { CLAUDE_PROJECT_DIR: ROOT },
+    });
+    assert(gate('Meridian').stdout.trim() === '', 'the hook must not block on a register judgement');
+    assert(/deny/.test(gate('Ledger — accessible form validation kit').stdout), 'form tells must still deny');
+  });
+
+  it('notices when a new name repeats the shape of the ones already shipped', () => {
+    // Otava, Tirage, Firn, Fettle, Kvitto, Lumo: six of nine are one short
+    // word. Better than Meridian, and still a formula.
+    const catalogue = path.join(tmp, 'catalogue.json');
+    fs.writeFileSync(catalogue, JSON.stringify(
+      ['Otava', 'Tirage', 'Firn', 'Fettle', 'Kvitto', 'Lumo', 'Threshold', 'Ledger', 'Plumbline']));
+    const same = node([nameCheck, 'Vello', '--against', catalogue]);
+    assert(/house-formula/.test(same.stdout), `a one-word short name should match the formula:\n${same.stdout}`);
+    for (const different of ['Second Press', 'Cold Storage Works']) {
+      const r = node([nameCheck, different, '--against', catalogue]);
+      assert(!/house-formula/.test(r.stdout), `${different} breaks the shape and should pass:\n${r.stdout}`);
+    }
+  });
+
+  it('a missing --against file exits 2 rather than silently checking nothing', () => {
+    exits(2, [nameCheck, 'Vello', '--against', path.join(tmp, 'no-such-catalogue.json')]);
+  });
 });
 
 // ---------------------------------------------------------------- nameGate.js

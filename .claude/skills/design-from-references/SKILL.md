@@ -298,6 +298,25 @@ narrative function.
     kebab-case slug, or a blacklisted marketing word. **Fix it and re-run until
     it exits 0, before `create_new_file`.** Run it on the brand name, the file
     name, page names and any headline you write.
+    **For the BRAND name, run it strict and against the catalogue:**
+    ```
+    node <skill root>/scripts/nameCheck.js "<brand>" --strict --against <catalogue.json>
+    ```
+    That adds the two judgement checks the form rules cannot see:
+    **abstract-register** (Meridian, Cadence, Baseline — an abstract noun
+    gesturing at a quality, the register every generator defaults to) and
+    **house-formula** (six of the nine names shipped from this repo are a single
+    foreign word of 4–6 letters; the escape from AI naming became a pattern of
+    its own).
+    **Find the name, don't invent it:** list 10–15 real terms from the product's
+    domain — the tools, steps, measurements, materials, trade words — and pick a
+    concrete one. Tirage is a print run, Firn is granular snow, Kvitto is a
+    receipt, a plumbline finds true vertical. Full method and the shape warning:
+    §4 of `references/antiSlop.md`.
+    These stay OUT of the PreToolUse hook on purpose: the hook must only ever
+    block on tells of form, which are certain. Whether a register is wrong for
+    *this* product is a judgement, so it is raised, answered out loud, and
+    decided with the user.
     This gate exists because prose did not work: the dash ban was written into
     `antiSlop.md`, repeated in `/publish-data`, and then broken twice anyway —
     once in a file name, once in the copy inside it. The user's verdict was
