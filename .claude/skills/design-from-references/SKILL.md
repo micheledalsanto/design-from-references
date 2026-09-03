@@ -283,6 +283,22 @@ narrative function.
     asked for these finishing steps on two separate projects — treat them as
     definition of done, not polish. Detail in §7.2 of
     `references/build-verify-output.md`.
+  - **4c. CHECK THE BUILD AGAINST THE COUNT (blocking) — the loop nothing closed.**
+    ```
+    node <skill root>/scripts/constraintsCheck.js \
+      --constraints <tmp>/<category>-constraints.md --build <tmp>/build.json
+    ```
+    Write `build.json` with what you ACTUALLY shipped — `{"background": "#…",
+    "fonts": ["…"], "accent": "#…"}` — and read the verdict:
+    **HONOURED** agrees with the majority · **DEVIATED** disagrees but has a row
+    in the Deviations table · **VIOLATED** disagrees with nothing written down,
+    and exits 1.
+    The count happened at 2a and the choice happened at 3, and until this
+    existed *no step compared them*. Gate 5 checks the render — clipping,
+    overflow, contrast — so a dark background in a 9-1 light category passed
+    every gate in this skill as long as it rendered cleanly. That is exactly the
+    design deleted on 2026-08-18. A blank Deviations row excuses nothing: name
+    the dimension, the reason and the user's agreement, or change the build.
 - **5. Render verification GATE** (`design-verifier`, on the real output):
   **PASS before saying "done"**. Known errors: clipping/height, 0-sizes,
   overflow, truncated text, QA, contrast. → same reference file as the build.

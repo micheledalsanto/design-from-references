@@ -307,7 +307,12 @@ function main() {
   md.push('');
   md.push('| Dimension | Counted | Verdict |');
   md.push('| --- | --- | --- |');
-  for (const r of rows) md.push(`| ${r.label.replace(' [measured]', '')} | ${r.buckets} | ${r.verdict} |`);
+  // Escape the pipes inside the counts. "light 9 | dark 1" was splitting the
+  // row into four cells, so the binding table rendered with the verdict in the
+  // wrong column in every markdown viewer -- including the one the internal
+  // critic re-reads it in at gate 3.9.
+  const cell = (s) => String(s).replace(/\|/g, '\\|');
+  for (const r of rows) md.push(`| ${cell(r.label.replace(' [measured]', ''))} | ${cell(r.buckets)} | ${cell(r.verdict)} |`);
   md.push('');
   md.push('## Counted by eye (fill before gate 2.5 — blank rows block the gate)');
   md.push('');
