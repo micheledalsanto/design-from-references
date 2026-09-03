@@ -34,3 +34,8 @@ tmp/
 # Stray QA screenshots: skill temp renders belong in tmp/qa/ (already ignored
 # via tmp/); safety net for PNGs mistakenly saved in the repo root
 /*.png
+
+# Community listing drafts: /publish-data and /imagePrompts write the name,
+# description, tags and prompts per design here. Per-file working output, not
+# repo content.
+/figma-fields/

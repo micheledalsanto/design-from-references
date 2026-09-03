@@ -1,0 +1,14 @@
+# Normalise to LF in the repository. CI runs on Linux and the scripts are read
+# by both; without this every git command on Windows warns about CRLF and the
+# committed line endings drift by author.
+* text=auto eol=lf
+
+# Never touch binaries.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
