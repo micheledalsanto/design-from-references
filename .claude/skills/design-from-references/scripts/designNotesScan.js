@@ -182,11 +182,30 @@ const DIMENSIONS = [
     },
   },
   {
-    key: 'ITALIC KEYWORD',
+    key: 'ITALIC DISPLAY',
     buckets: ['yes', 'no'],
     run(secs) {
-      const t = scope(secs, [...SEC.type, ...SEC.components]);
-      return probe(t, /italic\w*\s+(keyword|word|emphasis|accent)|keyword[^.\n]{0,30}italic|italic\w*\s+(inside|within)\s+the\s+(headline|h1)/i, null);
+      // Was scoped to the type/components sections and required the phrase
+      // "italic keyword"/"italic emphasis". It matched nothing in the whole
+      // corpus while eight design.md files describe italics, because the notes
+      // write "centered italic serif headline overlay" and "headline moments
+      // use italic serif" -- in the hero and sections prose, not under Type.
+      // The 6/70 quoted in gate 2c came from a hand grep, not from here.
+      //
+      // Now: italics within 40 characters of a display context, either order.
+      // Deliberately NOT "any mention of italic": an italic pull quote or a
+      // caption is not the tell. Section 7a records what a loose pattern costs
+      // -- it turned 2 into 7 in saasPricing before being tightened.
+      // Verified against the corpus by hand, 2026-09-03: this matches 6 of the
+      // 8 notes that mention italics, and the 2 it skips are both pull quotes
+      // ("large centered pull-quote in serif italic") -- an italic quote is a
+      // typographic convention, not the headline tell. "key word"/"key phrase"
+      // is in the list because Ezra's note reads "italic used for the key
+      // phrase", which IS the tell and was the one real miss.
+      const t = scope(secs, [...SEC.type, ...SEC.components, ...SEC.sections, ...SEC.layout, ...SEC.works]) || secs._all;
+      const DISPLAY = 'headline|display|hero|tagline|h1|heading|title|key\\s+(word|phrase)|keyword';
+      return probe(t, new RegExp(
+        `italic\\w*[^.\\n]{0,40}(${DISPLAY})|(${DISPLAY})[^.\\n]{0,40}italic`, 'i'), null);
     },
   },
   {

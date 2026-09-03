@@ -20,12 +20,13 @@ const fs = require('fs');
 const path = require('path');
 
 function parseArgs(argv) {
-  const a = { category: null, cluster: null, root: null, out: null };
+  const a = { category: null, cluster: null, root: null, out: null, json: false };
   for (let i = 0; i < argv.length; i++) {
     const v = argv[i];
     if (v === '--cluster') a.cluster = argv[++i];
     else if (v === '--dataset-root') a.root = argv[++i];
     else if (v === '--out') a.out = argv[++i];
+    else if (v === '--json') a.json = true;
     else if (!v.startsWith('--') && !a.category) a.category = v;
   }
   return a;
@@ -262,6 +263,19 @@ function main() {
 
   // --- print ---------------------------------------------------------------
   const W = 30;
+  // --json exists so houseStyleTally.js can aggregate these counts across every
+  // category instead of re-implementing the measurement. It prints the rows and
+  // stops: no human table, no constraints file.
+  if (args.json) {
+    console.log(JSON.stringify({
+      category: data.category || args.category,
+      cluster: clusterLabel,
+      sites: n,
+      rows: rows.map((r) => ({ label: r.label.replace(' [measured]', ''), buckets: r.buckets, verdict: r.verdict, note: r.note })),
+    }, null, 2));
+    return;
+  }
+
   const pad = (s) => String(s).padEnd(W);
   const out = [];
   out.push(`DATASET TALLY — ${data.category || args.category} · ${clusterLabel} · ${n} sites`);
@@ -312,4 +326,7 @@ function main() {
   console.log('Fill the by-eye rows before gate 2.5, and re-read this file at gate 3.');
 }
 
-main();
+// Guarded like contrast.js and nameCheck.js, so houseStyleTally.js can borrow
+// the slop list instead of keeping a second copy that drifts.
+if (require.main === module) main();
+module.exports = { SLOP_FONTS };

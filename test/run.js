@@ -375,6 +375,54 @@ describe('designNotesScan.js', () => {
   });
 });
 
+// ---------------------------------------------------------------- houseStyleTally.js
+
+describe('houseStyleTally.js (gate 2c is generated, not typed)', () => {
+  const houseStyle = path.join(SCRIPTS, 'houseStyleTally.js');
+
+  it('aggregates the fixture corpus and reports the corpus size', () => {
+    const r = exits(0, [houseStyle, '--dataset-root', FIXTURES]);
+    assert(/1 categories/.test(r.stdout), `expected the fixture's single category, got:\n${r.stdout}`);
+    assert(/10\s*\nsites|10 sites/.test(r.stdout), `expected 10 sites, got:\n${r.stdout}`);
+  });
+
+  it('carries the markers so SKILL.md can be spliced', () => {
+    const { BEGIN, END } = require(path.join(ROOT, houseStyle));
+    const r = exits(0, [houseStyle, '--dataset-root', FIXTURES]);
+    assert(r.stdout.includes(BEGIN) && r.stdout.includes(END), 'generated block is missing its markers');
+  });
+
+  it('the background verdict matches what datasetTally counted', () => {
+    // Same pinned number as the tally test, reached by a different route: if
+    // the aggregation ever stops reading the rows correctly, this diverges.
+    const r = exits(0, [houseStyle, '--dataset-root', FIXTURES]);
+    assert(/light wins in \*\*1\/1\*\*/.test(r.stdout), `expected 1/1 categories, got:\n${r.stdout}`);
+    assert(/\(9-1\)/.test(r.stdout), `expected the 9-1 split, got:\n${r.stdout}`);
+  });
+
+  it('counts italics in a display context, and skips italic pull quotes', () => {
+    // The dimension matched NOTHING across the whole corpus before this: it was
+    // scoped to the Type section and required the phrase "italic keyword",
+    // while the notes write "centered italic serif headline overlay". The
+    // 6/70 in gate 2c came from a hand grep, not from the script.
+    const scan = JSON.parse(
+      execFileSync(process.execPath, [notesScan, 'longevityClinic', '--dataset-root', FIXTURES, '--json'], {
+        cwd: ROOT, encoding: 'utf8',
+      })
+    );
+    const ital = scan.dimensions.find((d) => d.key === 'ITALIC DISPLAY');
+    assert(ital, 'ITALIC DISPLAY dimension is missing');
+    const yes = (ital.counts || {}).yes || 0;
+    // Ezra, Fountain Life, Function Health -- the exact three the run log names.
+    assert(yes === 3, `expected 3 italic-display sites in longevityClinic, got ${yes}`);
+  });
+
+  it('refuses to invent a table when there is no corpus', () => {
+    const r = exits(2, [houseStyle, '--dataset-root', path.join(tmp, 'nothing-here')]);
+    assert(/nothing to measure/.test(r.stderr), `expected a clear refusal, got: ${r.stderr.trim()}`);
+  });
+});
+
 // ---------------------------------------------------------------- repo integrity
 
 describe('repo integrity', () => {
