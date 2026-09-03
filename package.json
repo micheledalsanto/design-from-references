@@ -3,6 +3,9 @@
   "version": "0.4.0",
   "private": true,
   "description": "Claude Code skills + agents that learn aesthetics from measured, award-winning sites and generate original, accessible, component-driven Figma design systems.",
+  "scripts": {
+    "test": "node test/run.js"
+  },
   "engines": {
     "node": ">=20"
   }
