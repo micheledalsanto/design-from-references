@@ -60,6 +60,28 @@ hyphens where avoidable.
   Figma file name carries an AI tell. It must **fail open** on every error
   path: a hook that wedges the tool is worse than one that misses a bad name.
 
+## Look after your corpus
+
+`data/datasets/` is gitignored by policy, so **git is not its backup and cannot
+be**. That is not theoretical: ten of eleven categories were once found holding
+screenshots and nothing else — every `dataset.json` and all 98 `design.md`
+files gone, because the text was tracked, the screenshots were not, and a
+history rewrite took the tracked half. They were recovered from a dangling
+commit that the next `git gc` would have pruned.
+
+```bash
+npm run dataset:backup     # text only (~1 MB), to ~/designFromReferencesBackups
+npm run dataset:backups    # list what you have
+```
+
+Run it after `dataset-builder` finishes a category. Screenshots are excluded by
+default — they are ~287 MB and the agent can recapture them; the measurements
+are what cost research time.
+
+```bash
+npm run gate:housestyle    # is the skill's gate 2c table still true of the corpus?
+```
+
 ## Run the tests
 
 One command, no dependencies, Node 20+:

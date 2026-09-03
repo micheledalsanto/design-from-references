@@ -4,7 +4,10 @@
   "private": true,
   "description": "Claude Code skills + agents that learn aesthetics from measured, award-winning sites and generate original, accessible, component-driven Figma design systems.",
   "scripts": {
-    "test": "node test/run.js"
+    "test": "node test/run.js",
+    "dataset:backup": "node .claude/skills/design-from-references/scripts/datasetBackup.js",
+    "dataset:backups": "node .claude/skills/design-from-references/scripts/datasetBackup.js --list",
+    "gate:housestyle": "node .claude/skills/design-from-references/scripts/houseStyleTally.js --check"
   },
   "engines": {
     "node": ">=20"

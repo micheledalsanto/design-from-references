@@ -423,6 +423,45 @@ describe('houseStyleTally.js (gate 2c is generated, not typed)', () => {
   });
 });
 
+// ---------------------------------------------------------------- datasetBackup.js
+
+describe('datasetBackup.js (git is not the corpus backup, and cannot be)', () => {
+  const backup = path.join(SCRIPTS, 'datasetBackup.js');
+  const dest = path.join(tmp, 'backups');
+
+  it('copies the measured text and leaves the screenshots behind', () => {
+    const r = exits(0, [backup, '--dataset-root', FIXTURES, '--dest', dest]);
+    assert(/1 categories, 10 sites/.test(r.stdout), `unexpected summary: ${r.stdout}`);
+    const dir = fs.readdirSync(dest).find((d) => /^datasets-/.test(d));
+    assert(dir, 'no dated backup directory was created');
+    const manifest = JSON.parse(fs.readFileSync(path.join(dest, dir, 'manifest.json'), 'utf8'));
+    assert(manifest.sites === 10, `manifest should record 10 sites, got ${manifest.sites}`);
+    assert(manifest.screenshots === false, 'text-only backup must say so in the manifest');
+    // The half that was actually lost has to be the half that is saved.
+    const files = [];
+    (function walk(d) {
+      for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+        if (e.isDirectory()) walk(path.join(d, e.name)); else files.push(e.name);
+      }
+    })(path.join(dest, dir));
+    assert(files.includes('dataset.json'), 'dataset.json was not backed up');
+    assert(files.filter((f) => f === 'design.md').length === 10, 'not every design.md was backed up');
+    assert(!files.some((f) => /\.png$/i.test(f)), 'screenshots must be skipped by default');
+  });
+
+  it('never overwrites an earlier backup taken the same day', () => {
+    // A second run after a loss must not replace the good copy with the bad one.
+    exits(0, [backup, '--dataset-root', FIXTURES, '--dest', dest]);
+    const dirs = fs.readdirSync(dest).filter((d) => /^datasets-/.test(d));
+    assert(dirs.length === 2, `expected two distinct backups, got ${JSON.stringify(dirs)}`);
+  });
+
+  it('refuses to write an empty backup when there is no corpus', () => {
+    const r = exits(1, [backup, '--dataset-root', path.join(tmp, 'nothing-here'), '--dest', dest]);
+    assert(/refusing to write an empty backup/.test(r.stderr), `expected a refusal, got: ${r.stderr.trim()}`);
+  });
+});
+
 // ---------------------------------------------------------------- repo integrity
 
 describe('repo integrity', () => {
