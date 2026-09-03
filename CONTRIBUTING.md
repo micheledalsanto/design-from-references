@@ -27,22 +27,22 @@ A dataset teaches the system the *measured* aesthetics of a category
    - each `design.md` has usable "How to apply" notes;
    - 2–3 style clusters with meaningful labels.
 
-3. Open a PR with **`dataset.json` + the `design.md` files only**.
-   Screenshots (`*.png`) are heavy full-page captures of third-party sites and
-   don't belong in the repo. Anyone can regenerate them locally with
-   `dataset-builder`.
+3. **Share it in an issue, not a PR.** `/data/datasets/` is gitignored in
+   full, deliberately: a dataset is a set of third-party site names, URLs and
+   measurements, and this repo does not redistribute them. Open an issue
+   titled `dataset: <category>` and attach `dataset.json` plus the `design.md`
+   files as a zip. Leave the screenshots out — they are heavy full-page
+   captures of other people's sites, and anyone can regenerate them locally
+   with `dataset-builder`.
 
-   > **Heads up — you have to force-add them.** `.gitignore` currently excludes
-   > the whole of `/data/datasets/`, not just the images, so following the
-   > instruction above as written produces an empty PR and git says nothing.
-   > Until that rule is narrowed, add the text files explicitly:
-   >
-   > ```bash
-   > git add -f data/datasets/<category>/dataset.json \
-   >            data/datasets/<category>/*/design.md
-   > ```
-   >
-   > Check what you actually staged with `git status` before pushing.
+   What that gets you: the category gets reviewed, the recipe gets discussed,
+   and useful measurements can be folded into the skills' rules. What it will
+   not do is add your dataset to the repo, because nothing ships bundled —
+   every user builds the categories they need locally.
+
+   > The one exception is `test/fixtures/datasets/`, force-added on purpose so
+   > CI has measured data to count against. It is one category, text only, and
+   > it is frozen. See "Run the tests" below.
 
 Category slug convention: single word or camelCase (e.g. `fintechApps`), no
 hyphens where avoidable.
@@ -56,33 +56,35 @@ hyphens where avoidable.
   to call Figma/MCP). State each rule once — link, don't repeat.
 - Skill/agent content is English; keep any user-facing trigger phrases in the
   frontmatter `description` intact.
-- If you touch `scripts/contrast.js`, run the checks locally:
+- The `nameGate.js` hook in `.claude/hooks/` blocks `create_new_file` when a
+  Figma file name carries an AI tell. It must **fail open** on every error
+  path: a hook that wedges the tool is worse than one that misses a bad name.
 
-  ```bash
-  node .claude/skills/design-from-references/scripts/contrast.js "#fff:#000"   # exit 0
-  node .claude/skills/design-from-references/scripts/contrast.js "#777:#999"   # exit 1
-  node .claude/skills/design-from-references/scripts/contrast.js "nope"        # exit 2
-  ```
+## Run the tests
 
-  CI runs the same assertions plus JSON validation on every PR.
+One command, no dependencies, Node 20+:
 
-- If you touch `datasetTally.js` or `designNotesScan.js`, run them against the
-  committed fixture — that is what CI does:
+```bash
+npm test
+```
 
-  ```bash
-  node .claude/skills/design-from-references/scripts/datasetTally.js \
-    longevityClinic --dataset-root test/fixtures/datasets
-  node .claude/skills/design-from-references/scripts/designNotesScan.js \
-    longevityClinic --dataset-root test/fixtures/datasets
-  ```
+That is exactly what CI runs — `.github/workflows/ci.yml` is now four lines
+that call it. Run it before you push; the assertions used to live inline in
+the workflow, which meant nobody could run them locally and a YAML edit broke
+the quoting without anyone noticing.
 
-  `test/fixtures/datasets/` holds the text half of one real dataset (no
-  screenshots, ~100 KB) so the counting assertions run against measured data.
-  It exists because `data/datasets/` is gitignored, which used to leave those
-  CI steps either iterating an empty glob or crashing on a missing directory.
-  **Treat the fixture as frozen**: three CI assertions pin exact numbers from
-  it (`light 9 | dark 1`, 7 sites above 56px, alignment `unknown` for all 10).
-  Editing it to make a test pass removes the reason the test exists.
+`test/fixtures/datasets/` holds the text half of one real dataset (no
+screenshots, ~100 KB) so the counting assertions run against measured data. It
+exists because `data/datasets/` is gitignored, which used to leave those CI
+steps either iterating an empty glob or crashing on a missing directory.
+
+**Treat the fixture as frozen.** Several assertions pin exact numbers from it
+(`light 9 | dark 1`, 7 sites above 56px, alignment `unknown` for all 10,
+`SURFACE TREATMENT` stated exactly once). Each number is a mistake this repo
+actually made: a design built on the 1 dark reference out of 10, a
+hand-written ">56px is slop" ban the measurement disproved, a loose regex that
+turned 2 into 7. Editing the fixture to make a test pass removes the reason
+the test exists — fix the script instead.
 
 ## Reporting issues
 
