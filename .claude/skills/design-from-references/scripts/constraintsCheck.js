@@ -69,7 +69,17 @@ function parseConstraints(text) {
     if (!section || !/^\s*\|/.test(line)) continue;
     const c = cells(line);
     if (c.length < 3 || /^-+$/.test(c[1]) || /^dimension$/i.test(c[0])) continue;
-    if (section === 'verdicts') verdicts[c[0].toUpperCase()] = { counted: c[1], verdict: c[2] };
+    if (section === 'verdicts') {
+      // Four columns since strength was added; three in files written before.
+      // Read both, so an older constraints file still checks (as NORM, the
+      // behaviour it had when it was written).
+      const hasStrength = c.length >= 4;
+      verdicts[c[0].toUpperCase()] = {
+        counted: c[1],
+        strength: hasStrength ? c[2].toUpperCase().replace(/[^A-Z]/g, '') : '',
+        verdict: hasStrength ? c[3] : c[2],
+      };
+    }
     // A Deviations row counts only when a dimension is actually named. The
     // template ships one empty row; an empty row excuses nothing.
     else if (section === 'deviations' && c[0]) deviations.add(c[0].toUpperCase());
@@ -178,14 +188,29 @@ function main() {
     const result = fn(verdicts[dimension], build);
     if (!result) continue;
     checked++;
+    const strength = (verdicts[dimension] || {}).strength || '';
     let state = result.state;
+    let tag;
     if (state === 'FAILED') {
-      // A documented, agreed deviation is the legitimate path. An undocumented
-      // one is the thing that got a design deleted.
-      state = deviations.has(dimension) ? 'DEVIATED' : 'VIOLATED';
-      if (state === 'VIOLATED') violations++;
+      if (strength === 'OPEN' || strength === 'THIN') {
+        // Nothing to violate. The references disagree, so there is no majority
+        // being overruled -- and this is exactly where the design is supposed
+        // to spend its difference. Treating it as a violation is what pushed
+        // every output onto the category mean.
+        state = 'FREE';
+        tag = `FREE CHOICE (the references are ${strength === 'OPEN' ? 'split' : 'too thin'} here — no majority to overrule)`;
+      } else {
+        // A documented, agreed deviation is the legitimate path. An
+        // undocumented one is the thing that got a design deleted.
+        state = deviations.has(dimension) ? 'DEVIATED' : 'VIOLATED';
+        if (state === 'VIOLATED') violations++;
+        tag = state === 'DEVIATED'
+          ? 'DEVIATED (recorded in the Deviations table)'
+          : `VIOLATED (${strength || 'majority'})`;
+      }
+    } else {
+      tag = strength && state === 'HONOURED' ? `${state} (${strength})` : state;
     }
-    const tag = state === 'DEVIATED' ? 'DEVIATED (recorded in the Deviations table)' : state;
     console.log(`${dimension.padEnd(16)} ${tag}`);
     console.log(`${''.padEnd(16)} ${result.detail}`);
   }

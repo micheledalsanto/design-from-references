@@ -163,10 +163,34 @@ Run in order; for detail load the indicated `references/` file.
     Copy the resulting counts into the *by-eye* rows of the constraints file.
     **Leaving those rows blank blocks gate 2.5** — they are the dimensions past
     rejections actually turned on.
-    Then follow the MAJORITY. Going against it needs an explicit, stated reason
-    and the user's agreement — "it feels more distinctive" is NOT a reason —
-    and it goes in the **Deviations** table of the constraints file.
-    A single outlier site is never the model.
+    **Read the STRENGTH, not just the majority.** `light 9 | dark 1` and
+    `two families 5 | single family 5` are both "a majority" and they are not
+    the same fact. The tally now grades each row:
+    - **LAW** (≥80% agree) — conform. Deviating reads as a mistake, not a choice.
+    - **NORM** (60–79%) — deviating needs a stated reason and the user's
+      agreement, recorded in the **Deviations** table. "It feels more
+      distinctive" is NOT a reason. A single outlier site is never the model.
+    - **OPEN** (<60%, or a tie) — **the references disagree, so there is nothing
+      to overrule.** This is where the design gets to be itself. Conforming here
+      buys no safety at all; it just spends the one budget you have for not
+      looking like everything else in the category.
+    - **THIN** (<3 sites stated it) — extend the dataset before trusting it.
+  - **2a-bis. SPEND THE DEVIATION — ask, don't decide alone (blocking).**
+    The tally prints a `FREE TO DEVIATE` line. Take it to the user with
+    `AskUserQuestion`: show the OPEN rows, say what each would mean concretely,
+    and let them pick **exactly one**.
+    - **One.** A design that deviates on every open row is not braver, it is
+      noise — one deliberate difference is what reads as a decision.
+    - **Before the build, not after.** A deviation chosen once the screen exists
+      is a rationalisation, which is the failure the Deviations table was
+      written to stop.
+    - If every measured row comes back LAW, say so plainly: the difference will
+      have to come from the signature, the copy and the art direction, and the
+      user should know that before the Early Look Gate, not after it.
+    This gate exists because the opposite equilibrium is just as bad as the
+    2026-08-18 rejection and much harder to see: conform on every axis and every
+    design converges on the category mean, differing only in its skin — which
+    is precisely the variation a generator produces.
   - **2b. STEAL THE STRUCTURE, NOT THE SKIN.** Originality belongs in the
     signature component, the copy and the palette — NOT in inventing a page
     architecture the whole category has already tested. If every reference opens

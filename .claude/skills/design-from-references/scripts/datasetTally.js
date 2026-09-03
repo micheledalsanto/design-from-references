@@ -97,8 +97,32 @@ const EYE_ROWS = [
   ['RADIUS UNIFORMITY', 'single value / varied by role'],
 ];
 
-function tallyRow(label, buckets, verdict, note) {
-  return { label, buckets, verdict, note: note || '' };
+function tallyRow(label, buckets, verdict, note, strength) {
+  return { label, buckets, verdict, note: note || '', strength: strength || '' };
+}
+
+/**
+ * How hard is this majority?
+ *
+ * `light 9 | dark 1` and `two families 5 | single family 5` were both reported
+ * as "the majority", with the same authority, and the skill said "follow the
+ * majority" to both. They are not the same fact. One is a law of the category;
+ * the other is the category telling you it has no opinion.
+ *
+ * Collapsing the two is what makes every output converge on the category mean:
+ * conforming where the references are genuinely split buys no safety, and
+ * spends the one budget a design has for being itself.
+ *
+ *   LAW   >= 80% of the sites that stated it agree — deviating reads as a mistake
+ *   NORM  60-79% — deviating needs a reason
+ *   OPEN  < 60%, or a tie — the references disagree, so this is FREE. Spend it here.
+ */
+function strengthOf(top, stated) {
+  if (!stated || stated < 3) return 'THIN';
+  const share = top / stated;
+  if (share >= 0.8) return 'LAW';
+  if (share >= 0.6) return 'NORM';
+  return 'OPEN';
 }
 
 // Datasets record fonts either as a bare family ("Fruitiger") or as a whole CSS
@@ -136,7 +160,8 @@ function buildRows(sites, n) {
     'BACKGROUND [measured]',
     `light ${light} | dark ${dark}${unknownBg ? ` | unknown ${unknownBg}` : ''}`,
     bgVerdict,
-    'The base surface token must match this verdict.'
+    'The base surface token must match this verdict.',
+    strengthOf(Math.max(light, dark), bgKnown)
   ));
 
   // 2. Accent hue occupancy — a crowded hue is the category cliche.
@@ -187,7 +212,8 @@ function buildRows(sites, n) {
     'TYPE PAIRING [measured]',
     `two families ${pairing} | single family ${n - pairing}`,
     pairing >= n - pairing ? 'PAIR TWO FAMILIES' : 'a single family is the norm here',
-    'Display+body from one superfamily tastes AI-neutral.'
+    'Display+body from one superfamily tastes AI-neutral.',
+    strengthOf(Math.max(pairing, n - pairing), n)
   ));
 
   // 5. Section vocabulary — the page architecture to steal (gate 2b).
@@ -216,11 +242,14 @@ function buildRows(sites, n) {
     const key = String(f).trim();
     firsts.set(key, (firsts.get(key) || 0) + 1);
   }
+  const firstRanked = [...firsts.entries()].sort((a, b) => b[1] - a[1]);
+  const firstStated = firstRanked.reduce((s, [, c]) => s + c, 0);
   rows.push(tallyRow(
     'OPENING SECTION [measured]',
-    [...firsts.entries()].sort((a, b) => b[1] - a[1]).map(([s, c]) => `${s} x${c}`).join(', ') || '(unknown)',
+    firstRanked.map(([s, c]) => `${s} x${c}`).join(', ') || '(unknown)',
     'Open the page the way the majority opens it.',
-    ''
+    '',
+    strengthOf(firstRanked.length ? firstRanked[0][1] : 0, firstStated)
   ));
 
   return rows;
@@ -282,8 +311,15 @@ function main() {
   out.push('='.repeat(72));
   for (const r of rows) {
     out.push(`${pad(r.label)} ${r.buckets}`);
-    out.push(`${pad('')} -> ${r.verdict}${r.note ? `  (${r.note})` : ''}`);
+    out.push(`${pad('')} -> ${r.strength ? `[${r.strength}] ` : ''}${r.verdict}${r.note ? `  (${r.note})` : ''}`);
   }
+  const open = rows.filter((r) => r.strength === 'OPEN');
+  out.push('');
+  out.push(open.length
+    ? `FREE TO DEVIATE (the references disagree here): ${open.map((r) => r.label.replace(' [measured]', '')).join(', ')}`
+    : 'FREE TO DEVIATE: nothing — every measured dimension has a real majority.');
+  out.push('Spend your deviation on an OPEN row. Deviating on a LAW row reads as a mistake,');
+  out.push('and conforming on an OPEN row buys no safety — it just costs you the design.');
   out.push('');
   out.push('COUNT THESE BY EYE — open every desktop screenshot and fill them in:');
   for (const [label, opts] of EYE_ROWS) out.push(`${pad(label)} ${opts}   ___/${n}`);
@@ -305,14 +341,31 @@ function main() {
   md.push('');
   md.push('## Measured verdicts (binding)');
   md.push('');
-  md.push('| Dimension | Counted | Verdict |');
-  md.push('| --- | --- | --- |');
+  md.push('**Strength decides how binding.** A majority is not one thing:');
+  md.push('');
+  md.push('- **LAW** (>=80% agree) — deviating reads as a mistake, not as a choice.');
+  md.push('- **NORM** (60-79%) — deviating needs a stated reason and the user\'s agreement.');
+  md.push('- **OPEN** (<60%, or a tie) — the references disagree, so there is nothing to');
+  md.push('  overrule. **This is where the design gets to be itself.** Conforming here');
+  md.push('  buys no safety; it only spends the one budget you have for not looking');
+  md.push('  like everything else in the category.');
+  md.push('- **THIN** (<3 sites stated it) — not enough data. Extend the dataset.');
+  md.push('');
+  md.push('| Dimension | Counted | Strength | Verdict |');
+  md.push('| --- | --- | --- | --- |');
   // Escape the pipes inside the counts. "light 9 | dark 1" was splitting the
   // row into four cells, so the binding table rendered with the verdict in the
   // wrong column in every markdown viewer -- including the one the internal
   // critic re-reads it in at gate 3.9.
   const cell = (s) => String(s).replace(/\|/g, '\\|');
-  for (const r of rows) md.push(`| ${cell(r.label.replace(' [measured]', ''))} | ${cell(r.buckets)} | ${cell(r.verdict)} |`);
+  for (const r of rows) md.push(`| ${cell(r.label.replace(' [measured]', ''))} | ${cell(r.buckets)} | ${r.strength || '—'} | ${cell(r.verdict)} |`);
+  md.push('');
+  const openRows = rows.filter((r) => r.strength === 'OPEN');
+  md.push(openRows.length
+    ? `**Free to deviate:** ${openRows.map((r) => r.label.replace(' [measured]', '')).join(', ')}.`
+    : '**Free to deviate:** nothing measured here is open — look to the by-eye rows below.');
+  md.push('Pick **one** and say so at gate 2.5. A design that deviates on every open row');
+  md.push('is not braver, it is noise: one deliberate difference is what reads as a choice.');
   md.push('');
   md.push('## Counted by eye (fill before gate 2.5 — blank rows block the gate)');
   md.push('');

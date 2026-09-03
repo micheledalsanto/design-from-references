@@ -235,6 +235,17 @@ describe('datasetTally.js', () => {
     }
   });
 
+  it('grades a majority by strength, not just direction', () => {
+    // light 9 | dark 1 and two families 5 | single family 5 were both reported
+    // as "the majority" with equal authority. Collapsing the two is what makes
+    // every output converge on the category mean: conforming where the
+    // references genuinely disagree buys no safety and spends the design.
+    const r = exits(0, [tally, 'longevityClinic', '--dataset-root', FIXTURES, '--out', path.join(tmp, 'strength.md')]);
+    assert(/\[LAW\] LIGHT/.test(r.stdout), `9-1 must be a LAW:\n${r.stdout}`);
+    assert(/\[OPEN\][^\n]*PAIR TWO FAMILIES/.test(r.stdout), `5-5 must be OPEN:\n${r.stdout}`);
+    assert(/FREE TO DEVIATE[^\n]*TYPE PAIRING/.test(r.stdout), 'the free axes must be named');
+  });
+
   it('an unknown category exits 2', () => {
     exits(2, [tally, 'noSuchCategory']);
   });
@@ -248,7 +259,9 @@ describe('datasetTally.js', () => {
     // 9 of the 10 sites sit on a light background: the verdict a rejected
     // design got wrong by hand, on a dark background taken from the 1.
     assert(/light 9 \| dark 1/.test(r.stdout), 'background tally changed');
-    assert(/-> LIGHT/.test(r.stdout), 'expected a LIGHT verdict');
+    // Pins the strength too: 9 of 10 is 90%, so this must grade as a LAW. If it
+    // ever slips to NORM or OPEN, deviating on it stops being a violation.
+    assert(/-> \[LAW\] LIGHT/.test(r.stdout), 'expected a LIGHT verdict graded LAW');
     // Fonts measured in the dataset must still be flagged as slop.
     assert(/SLOP-FLAGGED/.test(r.stdout), 'slop flagging is not firing');
   });
@@ -579,6 +592,22 @@ describe('constraintsCheck.js (the build is held against the count)', () => {
     assert(/BACKGROUND\s+DEVIATED/.test(r.stdout), `background should be deviated:\n${r.stdout}`);
     // Still exit 1: the FONTS violation has no row of its own.
     assert(/FONTS\s+VIOLATED/.test(r.stdout), 'the undocumented violation must survive');
+  });
+
+  it('an OPEN row is a free choice, not a violation', () => {
+    // A single type family in a 5-5 category overrules no majority. Failing it
+    // is what forced every design onto the category mean.
+    const oneFamily = buildFile('oneFamily.json', {
+      background: '#faf9f6', fonts: ['Signifier'], accent: '#1f6b48',
+    });
+    const r = exits(0, [check, '--constraints', constraints, '--build', oneFamily]);
+    assert(/TYPE PAIRING\s+FREE CHOICE/.test(r.stdout), `expected a free choice:\n${r.stdout}`);
+    assert(/BACKGROUND\s+HONOURED \(LAW\)/.test(r.stdout), 'the LAW row must still report its strength');
+  });
+
+  it('a LAW row is still binding', () => {
+    const r = exits(1, [check, '--constraints', constraints, '--build', rejected]);
+    assert(/BACKGROUND\s+VIOLATED \(LAW\)/.test(r.stdout), `9-1 must stay binding:\n${r.stdout}`);
   });
 
   it('reads the escaped pipes datasetTally writes', () => {
