@@ -183,6 +183,12 @@ function render(m) {
   return L.join('\n');
 }
 
+// --check compares the MEASUREMENTS, not the timestamp. Comparing the whole
+// block made the gate fail every time the date rolled over, on unchanged data --
+// a check that cries wolf daily is one you stop reading, which is worse than
+// not having it. Caught the morning after it was written, by itself.
+const stripDate = (s) => s.replace(/^Measured on \d{4}-\d{2}-\d{2} by/m, 'Measured on <date> by');
+
 function spliceInto(text, block) {
   const i = text.indexOf(BEGIN), j = text.indexOf(END);
   if (i === -1 || j === -1) return null;
@@ -217,7 +223,7 @@ function main() {
       process.exit(2);
     }
     if (args.check) {
-      if (updated === text) { console.log(`house-style table is current (${m.categories} categories, ${m.sites} sites).`); return; }
+      if (stripDate(updated) === stripDate(text)) { console.log(`house-style table is current (${m.categories} categories, ${m.sites} sites).`); return; }
       console.error('SKILL.md house-style table does not match the corpus.');
       console.error(`The corpus now holds ${m.categories} categories and ${m.sites} sites.`);
       console.error('Run: node <skill root>/scripts/houseStyleTally.js --write');

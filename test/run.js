@@ -547,6 +547,20 @@ describe('houseStyleTally.js (gate 2c is generated, not typed)', () => {
     assert(yes === 3, `expected 3 italic-display sites in longevityClinic, got ${yes}`);
   });
 
+  it('--check compares the measurements, not the date', () => {
+    // The gate failed the morning after it was written, on unchanged data,
+    // because it diffed the whole block including "Measured on <today>". A
+    // check that cries wolf every day is one you stop reading.
+    const { render, measure, gather, BEGIN, END } = require(path.join(ROOT, houseStyle));
+    const { categories } = gather(path.join(ROOT, FIXTURES));
+    const block = render(measure(categories));
+    const yesterday = block.replace(/Measured on \d{4}-\d{2}-\d{2} by/, 'Measured on 1999-01-01 by');
+    assert(block !== yesterday, 'the fixture must carry a date line for this to mean anything');
+    const strip = (s) => s.replace(/Measured on \d{4}-\d{2}-\d{2} by/, 'Measured on <date> by');
+    assert(strip(block) === strip(yesterday), 'only the date may differ between two runs on the same corpus');
+    assert(block.includes(BEGIN) && block.includes(END), 'markers must survive');
+  });
+
   it('refuses to invent a table when there is no corpus', () => {
     const r = exits(2, [houseStyle, '--dataset-root', path.join(tmp, 'nothing-here')]);
     assert(/nothing to measure/.test(r.stderr), `expected a clear refusal, got: ${r.stderr.trim()}`);
