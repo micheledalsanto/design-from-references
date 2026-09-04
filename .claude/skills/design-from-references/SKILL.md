@@ -122,6 +122,29 @@ A reference NEVER wins against usability and accessibility.
 
 ---
 
+## The gates are enforced, not remembered
+
+A `PreToolUse` hook (`.claude/hooks/buildGate.js`) **refuses `use_figma` and
+`create_new_file`** until the run manifest shows that gate 2a (the count) and
+gate 2.5 (the originality engine, including the deviation being spent) have
+actually run. The harness executes that hook, not you.
+
+It exists because a skill is text loaded into context and followed the way any
+instruction is followed. This repo's own run log records the components-before-
+screens rule broken twice and the dash rule broken on the first artefact built
+after it was written — with this skill loaded every time. Until the hook, a test
+of a design tested compliance, not the skill.
+
+- Each gate script writes to `<tmp>/dfr/run.json`; gate 2a starts the run.
+- The manifest is the audit trail: after a run, read it to see what actually
+  executed rather than trusting the summary.
+- **Not a design run?** `use_figma` is also how you inspect a file, rename a
+  layer or fix QA. Creating `<tmp>/dfr/nogate` lifts the gate — say so to the
+  user first. The point is not that skipping is impossible, it is that skipping
+  becomes a visible, recorded action instead of a silent one.
+
+---
+
 ## Gated procedure (overview — gates are blocking)
 Run in order; for detail load the indicated `references/` file.
 

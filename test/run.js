@@ -721,6 +721,8 @@ describe('originalityCheck.js (gate 2.5 can no longer be skipped)', () => {
     ],
     chosen: 'Plumbline',
     chosenBecause: 'It derives from the brand name without illustrating it, and gives every screen the same spine.',
+    // "none" keeps this fixture independent of whatever run manifest is live.
+    deviationSpent: 'none - every measured row came back LAW or NORM',
     antiCopyDistance: ['hero composition', 'section rhythm', 'typographic hierarchy'],
     signature: { name: 'The plumbline', description: 'A vertical hairline with measurement ticks and a weight at its foot, threading the full page height' },
     defaults: [
@@ -833,6 +835,84 @@ describe('webartist browser audits (never executed by anything else)', () => {
       assert(Math.abs(a - b) < 0.01, `${fg}/${bg}: browser says ${a}, node says ${b}`);
     }
   });
+});
+
+// ---------------------------------------------------------------- the build gate
+
+describe('buildGate.js (the gates cannot be skipped, only declined out loud)', () => {
+  const buildGate = path.join('.claude', 'hooks', 'buildGate.js');
+  const manifest = require(path.join(ROOT, SCRIPTS, 'runManifest.js'));
+  const live = manifest.manifestPath();
+  const nogate = path.join(manifest.tmpRoot(), 'nogate');
+
+  // This test moves the real manifest aside and puts it back, because the hook
+  // deliberately reads the same one the gates write.
+  const saved = fs.existsSync(live) ? fs.readFileSync(live, 'utf8') : null;
+  const savedNogate = fs.existsSync(nogate);
+  const restore = () => {
+    if (saved === null) { try { fs.unlinkSync(live); } catch {} } else fs.writeFileSync(live, saved);
+    if (savedNogate) fs.writeFileSync(nogate, ''); else { try { fs.unlinkSync(nogate); } catch {} }
+  };
+  const setManifest = (obj) => {
+    fs.mkdirSync(manifest.tmpRoot(), { recursive: true });
+    if (obj === null) { try { fs.unlinkSync(live); } catch {} } else fs.writeFileSync(live, JSON.stringify(obj));
+    try { fs.unlinkSync(nogate); } catch {}
+  };
+  const fire = () => node([buildGate], { input: JSON.stringify({ tool_input: {} }) });
+  const decisionOf = (r) => (r.stdout.trim() ? JSON.parse(r.stdout).hookSpecificOutput.permissionDecision : 'allow');
+
+  try {
+    it('denies the build when no gate has run at all', () => {
+      setManifest(null);
+      const r = fire();
+      assert(decisionOf(r) === 'deny', 'a build with no manifest must be refused');
+      assert(/gate 2a/.test(r.stdout), 'the refusal must name the missing gate');
+    });
+
+    it('still denies when only the count has run', () => {
+      // Counting and then building without the originality engine is the
+      // half-run this is for.
+      setManifest({ category: 'longevityClinic', gates: { '2a': { at: 'x' } } });
+      const r = fire();
+      assert(decisionOf(r) === 'deny', 'a half-run must be refused');
+      assert(/gate 2.5/.test(r.stdout), 'the refusal must name what is still missing');
+      assert(/2a/.test(r.stdout), 'and say what did run');
+    });
+
+    it('allows the build once the gates are recorded', () => {
+      setManifest({ category: 'longevityClinic', gates: { '2a': { at: 'x' }, '2.5': { at: 'y' } } });
+      assert(decisionOf(fire()) === 'allow', 'a complete run must not be blocked');
+    });
+
+    it('is NOT fail-open: this hook exists to block', () => {
+      // nameGate fails open because a missing checker must never wedge a tool.
+      // Here a missing manifest means the gates did not run, which is exactly
+      // the case to refuse.
+      setManifest(null);
+      assert(decisionOf(fire()) === 'deny', 'no manifest must mean no build');
+    });
+
+    it('the escape hatch lifts it, and leaves a file saying so', () => {
+      // use_figma is also how you inspect a file or fix QA. A gate nobody can
+      // live with gets switched off; one that makes you say so out loud gets
+      // kept -- and the file is the record.
+      setManifest(null);
+      fs.writeFileSync(nogate, '');
+      assert(decisionOf(fire()) === 'allow', 'the declared exemption must lift the gate');
+    });
+
+    it('is registered for the build tools, not just create_new_file', () => {
+      // use_figma is the tool that actually builds, and it was unguarded.
+      for (const f of ['.claude/settings.json', path.join('.claude', 'hooks', 'hooks.json')]) {
+        const j = JSON.parse(fs.readFileSync(path.join(ROOT, f), 'utf8'));
+        const entry = j.hooks.PreToolUse.find((e) => JSON.stringify(e).includes('buildGate'));
+        assert(entry, f + ' does not register buildGate');
+        assert(/use_figma/.test(entry.matcher), f + ' does not guard use_figma');
+      }
+    });
+  } finally {
+    restore();
+  }
 });
 
 // ---------------------------------------------------------------- repo integrity

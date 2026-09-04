@@ -33,6 +33,7 @@ function parseArgs(argv) {
 }
 
 const { findDatasetRoot, reportMissing } = require('./datasetRoot.js');
+const runManifest = require('./runManifest.js');
 
 // --- colour helpers ---------------------------------------------------------
 function hexToRgb(hex) {
@@ -380,6 +381,14 @@ function main() {
   md.push('|  |  |  |  |  |');
   md.push('');
   fs.writeFileSync(outPath, md.join('\n'), 'utf8');
+
+  // Gate 2a is the first thing that happens in a design run, so it is the
+  // boundary between one design and the next: counting starts the run.
+  // --json does not, or houseStyleTally would reset the manifest eleven
+  // times while aggregating the corpus.
+  const openAxes = openRows.map((r) => r.label.replace(' [measured]', ''));
+  runManifest.startRun({ category: data.category || args.category, cluster: clusterLabel, sites: n });
+  runManifest.record('2a', { openAxes, constraintsFile: outPath });
   console.log(`\nwritten: ${outPath}`);
   console.log('Fill the by-eye rows before gate 2.5, and re-read this file at gate 3.');
 }

@@ -23,6 +23,7 @@
 'use strict';
 
 const fs = require('fs');
+const runManifest = require('./runManifest.js');
 
 // The seven dimensions anti-copy distance may be measured on (gate 2.5 §3).
 // A free-text dimension would let "it just feels different" count as distance.
@@ -124,6 +125,24 @@ function check(doc, mode) {
     }
   }
 
+  // 5-bis. The deviation being spent, named against what gate 2a found OPEN.
+  // Conforming on every axis is the failure that has no symptom: nothing looks
+  // wrong, the design just looks like everything else in the category. So the
+  // choice is recorded here, before the build, where it is a decision rather
+  // than the rationalisation it becomes once a screen exists.
+  const spent = doc.deviationSpent;
+  const manifest = runManifest.read();
+  const openAxes = (manifest && manifest.gates && manifest.gates["2a"] && manifest.gates["2a"].openAxes) || null;
+  if (!named(spent)) {
+    fail('deviationSpent', openAxes && openAxes.length
+      ? `name the ONE open axis this design spends its difference on: ${openAxes.join(", ")} — or "none" with a reason`
+      : 'name the axis this design spends its difference on, or "none" if every measured row was LAW/NORM');
+  } else if (openAxes && openAxes.length && !/^none/i.test(String(spent))) {
+    const match = openAxes.some((a) => a.toLowerCase() === String(spent).trim().toLowerCase());
+    if (!match) fail('deviationSpent', `"${spent}" is not one of the axes gate 2a found OPEN (${openAxes.join(', ')}). `
+      + `Deviating on a LAW or NORM row is a Deviations-table decision, not a free choice.`);
+  }
+
   // 6. Make It Less Expected: five defaults named, at least three replaced.
   const defaults = Array.isArray(doc.defaults) ? doc.defaults : [];
   if (defaults.length < 5) fail('defaults', `${defaults.length} AI defaults listed, 5 required`);
@@ -156,6 +175,7 @@ function main() {
   console.log(`ORIGINALITY ENGINE — gate 2.5 · ${args.mode} mode`);
   console.log('='.repeat(72));
   if (!problems.length) {
+    runManifest.record('2.5', { thesis: doc.thesis, chosen: doc.chosen, deviationSpent: doc.deviationSpent, signature: (doc.signature || {}).name });
     console.log('complete. Every requirement is on record.');
     console.log('');
     console.log('This checks that the work was DONE, not that it was good. Whether the');

@@ -11,6 +11,17 @@
             "statusMessage": "Checking the file name for AI tells"
           }
         ]
+      },
+      {
+        "matcher": "mcp__.*figma.*__(use_figma|create_new_file)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/buildGate.js\"",
+            "timeout": 15,
+            "statusMessage": "Checking the design gates have run"
+          }
+        ]
       }
     ]
   }

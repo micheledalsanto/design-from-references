@@ -33,6 +33,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const runManifest = require('./runManifest.js');
 
 const { parseHex, L } = require('./contrast.js');
 const { SLOP_FONTS } = require('./datasetTally.js');
@@ -229,6 +230,7 @@ function main() {
     console.log('"More distinctive" is not a reason.');
     process.exit(1);
   }
+  runManifest.record('4c', { checked, violations: 0, build: args.build });
   console.log(`${checked} dimension(s) checked, nothing violated.`);
 }
 
