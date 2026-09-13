@@ -49,13 +49,23 @@ So: treat the list as **"needs a reason", not "never"**. If the cluster you are
 designing for genuinely runs on one of these, say so with the count and use it
 deliberately. What is banned is picking it *by default*.
 
-**One superfamily for headings + body + data tends to read as generated** — a
-flat technical neutrality. But "no real brand does this" would be wrong: at the
-last count the references split roughly **even** between two-family and
-single-family, and single-family actually **wins in some categories** —
-corporate-website among them. So pair two voices as the default, and let the
-tally's TYPE PAIRING row for *your* cluster overrule it, which is the only
-count that governs the design in front of you.
+**One superfamily for headings + body + data is often called a tell** — a flat
+technical neutrality. **The corpus does not support it as a default rule, and
+this paragraph used to state the opposite.** When 11 categories were counted the
+split was roughly even and this file concluded "pair two voices as the default";
+adding `jobBoards` (11 of its 12 sites run on a single family) tipped the corpus
+to **64 single-family against 54 two-family**, so the stated default was
+recommending the *minority* practice while citing the count that contradicted it.
+
+There is therefore **no corpus-wide default to inherit**. Read the tally's
+TYPE PAIRING row for *your* cluster and follow it — that is the only count that
+governs the design in front of you, and it is what the rest of this file has
+always said. What actually distinguishes a designed system from a generated one
+is not the number of families but whether the face was **chosen**: a
+single-family system on a face with a real voice (Archivo on jobBoards,
+2026-09-04) reads as a decision; two families picked off the same free-font
+listicle do not. Regenerate the gate 2c table with `houseStyleTally.js --write`
+before quoting either number.
 
 **How to choose:** propose **3 alternatives verified as available in Figma**
 (`listAvailableFontsAsync`), explain the voice of each, and get agreement before
